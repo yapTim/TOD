@@ -129,6 +129,11 @@ class LivestreamActivity : AppCompatActivity(), Session.SessionListener, Publish
             mPublisher?.publishAudio = mPublisher?.publishAudio != true
         }
 
+        //toggle video on and off
+        togVideo.setOnClickListener {
+            mPublisher?.publishVideo = mPublisher?.publishVideo != true
+        }
+
         val conn = Connect("http://192.168.254.124")
         val call = conn.connection.getOpentokIds()
 

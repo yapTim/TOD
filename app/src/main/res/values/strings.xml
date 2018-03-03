@@ -9,4 +9,5 @@
     <string name="dropCallBtn">Drop</string>
     <string name="switchCamBtn">Switch</string>
     <string name="muteBtn">Mute</string>
+    <string name="togVideoBtn">Video</string>
 </resources>
