@@ -221,7 +221,7 @@ class LivestreamActivity : AppCompatActivity(), Session.SessionListener, Publish
         private val UI_ANIMATION_DELAY = 300
     }
 
-    //Session
+    // Session
     override fun onConnected(session: Session?) {
         Log.i(LOG_TAG, "Connected")
 
@@ -262,7 +262,7 @@ class LivestreamActivity : AppCompatActivity(), Session.SessionListener, Publish
         Log.i(LOG_TAG, "Error" + error.toString())
     }
 
-    //PublisherKit
+    // PublisherKit
     override fun onStreamCreated(publisher: PublisherKit?, stream: Stream?) {
         Log.i(LOG_TAG, "Publisher on Stream Created")
     }
@@ -277,7 +277,7 @@ class LivestreamActivity : AppCompatActivity(), Session.SessionListener, Publish
         Log.i(LOG_TAG, "Publisher Error ${error.toString()}")
     }
 
-    //Camera Listener
+    // Camera Listener
     override fun onCameraChanged(publisher: Publisher?, cameraId: Int) {
         "I changed cam".showToast(this)
     }
