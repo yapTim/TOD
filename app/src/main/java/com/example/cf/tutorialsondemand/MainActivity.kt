@@ -19,6 +19,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         tutor.setOnClickListener {
+            i = Intent(this, SelectQuestionsActivity::class.java)
+            startActivity(i)
+            finish()
+        }
+
+        livestream.setOnClickListener {
             i = Intent(this, LivestreamActivity::class.java)
             startActivity(i)
             finish()

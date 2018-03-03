@@ -2,6 +2,7 @@
     <string name="app_name">TutorialsOnDemand</string>
     <string name="tutorMsg">Answer a Question</string>
     <string name="studentMsg">Ask a Question</string>
+    <string name="startLive">Start Livestream</string>
     <string name="qstn">Question Here</string>
     <string name="genText">%1$s</string>
 
