@@ -10,17 +10,12 @@ import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.Toast
-import com.example.cf.tutorialsondemand.Objects.Opentok
-import com.example.cf.tutorialsondemand.OtherThings.ToastMaker
-import com.example.cf.tutorialsondemand.Retrofit.Connect
+import com.example.cf.tutorialsondemand.retrofit.Connect
 import com.opentok.android.*
 import com.opentok.android.Publisher.CameraListener
 import kotlinx.android.synthetic.main.activity_livestream.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 //For livestream
 private var API_KEY: String? = "46067082"

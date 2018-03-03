@@ -6,9 +6,9 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.widget.LinearLayout
-import com.example.cf.tutorialsondemand.Adapter.MyAdapter
-import com.example.cf.tutorialsondemand.Objects.Question
-import com.example.cf.tutorialsondemand.Retrofit.Connect
+import com.example.cf.tutorialsondemand.adapter.MyAdapter
+import com.example.cf.tutorialsondemand.models.Question
+import com.example.cf.tutorialsondemand.retrofit.Connect
 import kotlinx.android.synthetic.main.activity_select_questions.*
 import retrofit2.Call
 import retrofit2.Callback

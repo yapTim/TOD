@@ -1,7 +1,7 @@
-package com.example.cf.tutorialsondemand.Retrofit
+package com.example.cf.tutorialsondemand.retrofit
 
-import com.example.cf.tutorialsondemand.Objects.Opentok
-import com.example.cf.tutorialsondemand.Objects.Question
+import com.example.cf.tutorialsondemand.models.Opentok
+import com.example.cf.tutorialsondemand.models.Question
 import retrofit2.Call
 import retrofit2.http.GET
 

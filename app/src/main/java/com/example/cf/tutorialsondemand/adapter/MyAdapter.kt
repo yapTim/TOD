@@ -1,4 +1,4 @@
-package com.example.cf.tutorialsondemand.Adapter
+package com.example.cf.tutorialsondemand.adapter
 
 import android.content.Context
 import android.content.res.Resources
@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.example.cf.tutorialsondemand.R
-import com.example.cf.tutorialsondemand.Objects.Question
+import com.example.cf.tutorialsondemand.models.Question
 
 class MyAdapter(private val q: List<Question>?, private val c: Context) : RecyclerView.Adapter<MyAdapter.ViewHolder>(){
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

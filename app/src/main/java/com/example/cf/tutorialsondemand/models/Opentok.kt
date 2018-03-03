@@ -1,4 +1,4 @@
-package com.example.cf.tutorialsondemand.Objects
+package com.example.cf.tutorialsondemand.models
 
 /**
  * Created by CF on 3/3/2018.
