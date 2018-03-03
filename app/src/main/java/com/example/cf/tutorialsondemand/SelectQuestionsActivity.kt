@@ -21,16 +21,15 @@ class SelectQuestionsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_select_questions)
 
         val conn = Connect("http://192.168.254.124:8000")
-
         val call = conn.connection.getQuestions()
+
+        recycler.setHasFixedSize(true)
+        recycler.layoutManager = LinearLayoutManager(c, LinearLayout.VERTICAL, false)
 
         call.enqueue(object: Callback<List<Question>> {
             override fun onResponse(call: Call<List<Question>>, response: Response<List<Question>>) {
-                val qstns = response.body()
-                val rv = findViewById<RecyclerView>(R.id.recycler)
-                rv.setHasFixedSize(true)
-                rv.layoutManager = LinearLayoutManager(c, LinearLayout.VERTICAL, false)
-                rv.adapter = MyAdapter(qstns, c)
+                val questions: List<Question> = response.body()!!
+                recycler.adapter = MyAdapter(questions)
             }
 
             override fun onFailure(call: Call<List<Question>>?, t: Throwable?) {

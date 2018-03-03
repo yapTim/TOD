@@ -10,14 +10,18 @@ import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.Toast
+import com.example.cf.tutorialsondemand.models.Opentok
 import com.example.cf.tutorialsondemand.retrofit.Connect
 import com.opentok.android.*
 import com.opentok.android.Publisher.CameraListener
 import kotlinx.android.synthetic.main.activity_livestream.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-//For livestream
+// For livestream
 private var API_KEY: String? = "46067082"
 private var SESSION_ID: String? = "1_MX40NjA2NzA4Mn5-MTUyMDA2MzIxNTcyOH5OZFlFZlU2U3hYWC9WUktHbFVPQklrUGl-UH4"
 private var TOKEN: String? = "T1==cGFydG5lcl9pZD00NjA2NzA4MiZzaWc9NTNkMmI5OTJjNjYwZDRjYTY5Zjk2MzM2M2Y0MzZhYWNjY2IyZDQ5YTpzZXNzaW9uX2lkPTFfTVg0ME5qQTJOekE0TW41LU1UVXlNREEyTXpJeE5UY3lPSDVPWkZsRlpsVTJVM2hZV0M5V1VrdEhiRlZQUWtsclVHbC1VSDQmY3JlYXRlX3RpbWU9MTUyMDA2MzI0MSZub25jZT0wLjM1MDM0ODA2NDE5Mjc0NTY3JnJvbGU9cHVibGlzaGVyJmV4cGlyZV90aW1lPTE1MjAxNDk2MzkmaW5pdGlhbF9sYXlvdXRfY2xhc3NfbGlzdD0="
@@ -25,8 +29,7 @@ private val LOG_TAG = MainActivity::class.simpleName
 private const val RC_VIDEO_APP_PERM = 124
 
 class LivestreamActivity : AppCompatActivity(), Session.SessionListener, PublisherKit.PublisherListener, CameraListener {
-    val c: Context = this
-    //For livestream
+    // For livestream
     private var mSession: Session? = null
     private var mPublisher: Publisher? = null
     private var mSubscriber: Subscriber? = null
@@ -67,7 +70,7 @@ class LivestreamActivity : AppCompatActivity(), Session.SessionListener, Publish
         false
     }
 
-    //for livestream permissions
+    // for livestream permissions
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
@@ -91,7 +94,7 @@ class LivestreamActivity : AppCompatActivity(), Session.SessionListener, Publish
         }
     }
 
-    //Main function
+    // Main function
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_livestream)
@@ -105,54 +108,52 @@ class LivestreamActivity : AppCompatActivity(), Session.SessionListener, Publish
         // Upon interacting with UI controls, delay any scheduled hide()
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
-        dropCall.setOnTouchListener(mDelayHideTouchListener)
-        switchCam.setOnTouchListener(mDelayHideTouchListener)
-        muteMic.setOnTouchListener(mDelayHideTouchListener)
+        drop_call_button.setOnTouchListener(mDelayHideTouchListener)
+        switch_camera_button.setOnTouchListener(mDelayHideTouchListener)
+        mute_mic_button.setOnTouchListener(mDelayHideTouchListener)
+        toggle_video_button.setOnTouchListener(mDelayHideTouchListener)
 
-        //drop call button
-        dropCall.setOnClickListener {
+        // drop call button
+        drop_call_button.setOnClickListener {
             dropCall()
         }
 
-        //switch cam button
-        switchCam.setOnClickListener {
+        // switch cam button
+        switch_camera_button.setOnClickListener {
             mPublisher?.cycleCamera()
         }
 
-        //mute mic button
-        muteMic.setOnClickListener{
+        // mute mic button
+        mute_mic_button.setOnClickListener{
             mPublisher?.publishAudio = mPublisher?.publishAudio != true
         }
 
-        //toggle video on and off
-        togVideo.setOnClickListener {
+        // toggle video on and off
+        toggle_video_button.setOnClickListener {
             mPublisher?.publishVideo = mPublisher?.publishVideo != true
         }
 
         val conn = Connect("http://192.168.254.124")
         val call = conn.connection.getOpentokIds()
 
-//        call.enqueue(object: Callback<Opentok> {
-//            override fun onResponse(call: Call<Opentok>?, response: Response<Opentok>?) {
-//                val ids  = response?.body()
-//
-//
-//                SESSION_ID = ids?.sessionId
-//                TOKEN = ids?.opentokToken
-//
-//                //start Livestream
-//                requestPermissions()
-//            }
-//
-//            override fun onFailure(call: Call<Opentok>?, t: Throwable?) {
-//                val i = Intent(c, MainActivity::class.java)
-//                "Problems with Server!".showToast(c)
-//                startActivity(i)
-//
-//            }
-//        })
+        call.enqueue(object: Callback<Opentok> {
+            override fun onResponse(call: Call<Opentok>?, response: Response<Opentok>?) {
+                val ids  = response?.body()
 
-        requestPermissions()
+                SESSION_ID = ids?.s_id
+                TOKEN = ids?.access_token
+
+                // start Livestream
+                requestPermissions()
+            }
+
+            override fun onFailure(call: Call<Opentok>?, t: Throwable?) {
+                "Problems with Server!".showToast(this@LivestreamActivity)
+                startActivity(Intent(this@LivestreamActivity, MainActivity::class.java))
+                finish()
+
+            }
+        })
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -233,6 +234,7 @@ class LivestreamActivity : AppCompatActivity(), Session.SessionListener, Publish
 
     override fun onDisconnected(session: Session?) {
         Log.i(LOG_TAG, "Disconnected")
+
         dropCall()
     }
 
@@ -284,7 +286,7 @@ class LivestreamActivity : AppCompatActivity(), Session.SessionListener, Publish
 
     }
 
-    fun dropCall() {
+    private fun dropCall() {
         mSession?.disconnect()
         val i = Intent(this, MainActivity::class.java)
         "Call dropped.".showToast(this)
@@ -294,6 +296,6 @@ class LivestreamActivity : AppCompatActivity(), Session.SessionListener, Publish
 }
 
 //extension function for toast
-fun Any.showToast(c: Context) {
-    Toast.makeText(c, this.toString(), Toast.LENGTH_LONG).show()
+fun String.showToast(c: Context) {
+    Toast.makeText(c, this, Toast.LENGTH_LONG).show()
 }

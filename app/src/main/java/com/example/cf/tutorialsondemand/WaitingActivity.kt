@@ -9,7 +9,7 @@ class WaitingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_waiting)
-        val i = getIntent()
-        qstnText.text = getString(R.string.genText, i.getCharSequenceExtra("Question"))
+
+        question_text.text = getString(R.string.genText, intent.getCharSequenceExtra("question"))
     }
 }
