@@ -3,14 +3,18 @@ package com.example.cf.tutorialsondemand
 import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.graphics.Path
 import android.os.Bundle
 import android.os.Handler
+import android.support.annotation.FloatRange
+import android.support.v4.content.ContextCompat.startActivity
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.Toast
 import com.example.cf.tutorialsondemand.models.Opentok
+import com.example.cf.tutorialsondemand.opentok.OpentokManager
 import com.example.cf.tutorialsondemand.retrofit.Connect
 import com.opentok.android.*
 import com.opentok.android.Publisher.CameraListener
@@ -22,19 +26,14 @@ import retrofit2.Callback
 import retrofit2.Response
 
 // For livestream
-private var API_KEY: String? = "46067082"
-private var SESSION_ID: String? = "1_MX40NjA2NzA4Mn5-MTUyMDA2MzIxNTcyOH5OZFlFZlU2U3hYWC9WUktHbFVPQklrUGl-UH4"
-private var TOKEN: String? = "T1==cGFydG5lcl9pZD00NjA2NzA4MiZzaWc9NTNkMmI5OTJjNjYwZDRjYTY5Zjk2MzM2M2Y0MzZhYWNjY2IyZDQ5YTpzZXNzaW9uX2lkPTFfTVg0ME5qQTJOekE0TW41LU1UVXlNREEyTXpJeE5UY3lPSDVPWkZsRlpsVTJVM2hZV0M5V1VrdEhiRlZQUWtsclVHbC1VSDQmY3JlYXRlX3RpbWU9MTUyMDA2MzI0MSZub25jZT0wLjM1MDM0ODA2NDE5Mjc0NTY3JnJvbGU9cHVibGlzaGVyJmV4cGlyZV90aW1lPTE1MjAxNDk2MzkmaW5pdGlhbF9sYXlvdXRfY2xhc3NfbGlzdD0="
-private val LOG_TAG = MainActivity::class.simpleName
 private const val RC_VIDEO_APP_PERM = 124
 
 class LivestreamActivity : AppCompatActivity(), Session.SessionListener, PublisherKit.PublisherListener, CameraListener {
     // For livestream
-    private var mSession: Session? = null
-    private var mPublisher: Publisher? = null
-    private var mSubscriber: Subscriber? = null
-    private var publisher: FrameLayout? = null
-    private var subscriber: FrameLayout? = null
+    private lateinit var mSession: Session
+    private lateinit var mPublisher: Publisher
+    private lateinit var mSubscriber: Subscriber
+    private var logTag = MainActivity::class.simpleName
 
     private val mHideHandler = Handler()
     private val mHidePart2Runnable = Runnable {
@@ -81,14 +80,12 @@ class LivestreamActivity : AppCompatActivity(), Session.SessionListener, Publish
         val perms: Array<String> = arrayOf(Manifest.permission.INTERNET, Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)
 
         if(EasyPermissions.hasPermissions(this, *perms)) {
-            //init view from layout
-            publisher = findViewById(R.id.pubsView)
-            subscriber = findViewById(R.id.subsView)
+            OpentokManager().setAuthKeys()
 
-            //init and connect session
-            mSession = Session.Builder(this, API_KEY, SESSION_ID).build()
-            mSession?.setSessionListener(this)
-            mSession?.connect(TOKEN)
+            mSession = Session.Builder(this, OpentokManager().api_key, OpentokManager().session_id).build()
+            mSession.setSessionListener(this)
+            mSession.connect(OpentokManager().token)
+
         } else {
             EasyPermissions.requestPermissions(this, "We need access to your mic and camera", RC_VIDEO_APP_PERM, *perms)
         }
@@ -120,40 +117,20 @@ class LivestreamActivity : AppCompatActivity(), Session.SessionListener, Publish
 
         // switch cam button
         switch_camera_button.setOnClickListener {
-            mPublisher?.cycleCamera()
+            mPublisher.cycleCamera()
         }
 
         // mute mic button
         mute_mic_button.setOnClickListener{
-            mPublisher?.publishAudio = mPublisher?.publishAudio != true
+            mPublisher.publishAudio = mPublisher.publishAudio != true
         }
 
         // toggle video on and off
         toggle_video_button.setOnClickListener {
-            mPublisher?.publishVideo = mPublisher?.publishVideo != true
+            mPublisher.publishVideo = mPublisher.publishVideo != true
         }
 
-        val conn = Connect("http://192.168.254.124")
-        val call = conn.connection.getOpentokIds()
-
-        call.enqueue(object: Callback<Opentok> {
-            override fun onResponse(call: Call<Opentok>?, response: Response<Opentok>?) {
-                val ids  = response?.body()
-
-                SESSION_ID = ids?.s_id
-                TOKEN = ids?.access_token
-
-                // start Livestream
-                requestPermissions()
-            }
-
-            override fun onFailure(call: Call<Opentok>?, t: Throwable?) {
-                "Problems with Server!".showToast(this@LivestreamActivity)
-                startActivity(Intent(this@LivestreamActivity, MainActivity::class.java))
-                finish()
-
-            }
-        })
+        requestPermissions()
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -223,58 +200,54 @@ class LivestreamActivity : AppCompatActivity(), Session.SessionListener, Publish
 
     // Session
     override fun onConnected(session: Session?) {
-        Log.i(LOG_TAG, "Connected")
+        Log.i("LOl", "Connected")
 
         mPublisher = Publisher.Builder(this).build()
-        mPublisher?.setPublisherListener(this)
+        mPublisher.setPublisherListener(this)
 
-        publisher?.addView(mPublisher?.view)
-        mSession?.publish(mPublisher)
+        findViewById<FrameLayout>(R.id.pubsView).addView(mPublisher?.view)
+        mSession.publish(mPublisher)
     }
 
     override fun onDisconnected(session: Session?) {
-        Log.i(LOG_TAG, "Disconnected")
+        Log.i(logTag, "Disconnected")
 
         dropCall()
     }
 
     override fun onStreamDropped(session: Session?, stream: Stream?) {
-        Log.i(LOG_TAG, "Dropped")
-
-        if (mSubscriber != null) {
-            mSubscriber = null
-            subscriber?.removeAllViews()
+        Log.i(logTag, "Dropped")
+            findViewById<FrameLayout>(R.id.subsView).removeAllViews()
             dropCall()
-        }
     }
 
     override fun onStreamReceived(session: Session?, stream: Stream?) {
-        Log.i(LOG_TAG, "Received")
+        Log.i(logTag, "Received")
 
         if(mSubscriber == null) {
             mSubscriber = Subscriber.Builder(this, stream).build()
-            mSession?.subscribe(mSubscriber)
-            subscriber?.addView(mSubscriber?.getView())
+            mSession.subscribe(mSubscriber)
+            findViewById<FrameLayout>(R.id.subsView).addView(mSubscriber?.getView())
         }
     }
 
     override fun onError(session: Session?, error: OpentokError?) {
-        Log.i(LOG_TAG, "Error" + error.toString())
+        Log.i(logTag, "Error" + error.toString())
     }
 
     // PublisherKit
     override fun onStreamCreated(publisher: PublisherKit?, stream: Stream?) {
-        Log.i(LOG_TAG, "Publisher on Stream Created")
+        Log.i(logTag, "Publisher on Stream Created")
     }
 
     override fun onStreamDestroyed(publisher: PublisherKit?, stream: Stream?) {
-        Log.i(LOG_TAG, "Publisher Stream Destroyed")
+        Log.i(logTag, "Publisher Stream Destroyed")
 
         dropCall()
     }
 
     override fun onError(publisher: PublisherKit?, error: OpentokError?) {
-        Log.i(LOG_TAG, "Publisher Error ${error.toString()}")
+        Log.i(logTag, "Publisher Error ${error.toString()}")
     }
 
     // Camera Listener
@@ -287,7 +260,7 @@ class LivestreamActivity : AppCompatActivity(), Session.SessionListener, Publish
     }
 
     private fun dropCall() {
-        mSession?.disconnect()
+        mSession.disconnect()
         val i = Intent(this, MainActivity::class.java)
         "Call dropped.".showToast(this)
         startActivity(i)
