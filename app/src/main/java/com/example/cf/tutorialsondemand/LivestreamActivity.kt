@@ -3,18 +3,14 @@ package com.example.cf.tutorialsondemand
 import android.Manifest
 import android.content.Context
 import android.content.Intent
-import android.graphics.Path
 import android.os.Bundle
 import android.os.Handler
-import android.support.annotation.FloatRange
-import android.support.v4.content.ContextCompat.startActivity
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.Toast
 import com.example.cf.tutorialsondemand.models.Opentok
-import com.example.cf.tutorialsondemand.opentok.OpentokManager
 import com.example.cf.tutorialsondemand.retrofit.Connect
 import com.opentok.android.*
 import com.opentok.android.Publisher.CameraListener
@@ -80,11 +76,23 @@ class LivestreamActivity : AppCompatActivity(), Session.SessionListener, Publish
         val perms: Array<String> = arrayOf(Manifest.permission.INTERNET, Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)
 
         if(EasyPermissions.hasPermissions(this, *perms)) {
-            OpentokManager().setAuthKeys()
 
-            mSession = Session.Builder(this, OpentokManager().api_key, OpentokManager().session_id).build()
-            mSession.setSessionListener(this)
-            mSession.connect(OpentokManager().token)
+            val connection = Connect("http://192.168.254.124:8000")
+            val returnCall = connection.connection.getOpentokIds()
+
+            returnCall.enqueue(object: Callback<Opentok> {
+                override fun onResponse(call: Call<Opentok>, response: Response<Opentok>) {
+                    val ids = response.body()!!
+
+                    mSession = Session.Builder(this@LivestreamActivity, "46067082", ids.s_id).build()
+                    mSession.setSessionListener(this@LivestreamActivity)
+                    mSession.connect(ids.access_token)
+                }
+
+                override fun onFailure(call: Call<Opentok>, t: Throwable?) {
+                    Log.i(logTag, "We lost boys")
+                }
+            })
 
         } else {
             EasyPermissions.requestPermissions(this, "We need access to your mic and camera", RC_VIDEO_APP_PERM, *perms)
@@ -224,15 +232,13 @@ class LivestreamActivity : AppCompatActivity(), Session.SessionListener, Publish
     override fun onStreamReceived(session: Session?, stream: Stream?) {
         Log.i(logTag, "Received")
 
-        if(mSubscriber == null) {
-            mSubscriber = Subscriber.Builder(this, stream).build()
-            mSession.subscribe(mSubscriber)
-            findViewById<FrameLayout>(R.id.subsView).addView(mSubscriber?.getView())
-        }
+        mSubscriber = Subscriber.Builder(this, stream).build()
+        mSession.subscribe(mSubscriber)
+        findViewById<FrameLayout>(R.id.subsView).addView(mSubscriber.getView())
     }
 
     override fun onError(session: Session?, error: OpentokError?) {
-        Log.i(logTag, "Error" + error.toString())
+        Log.i(logTag, error.toString())
     }
 
     // PublisherKit

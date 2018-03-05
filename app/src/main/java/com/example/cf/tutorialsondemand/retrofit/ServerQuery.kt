@@ -13,6 +13,6 @@ interface ServerQuery {
     @GET("/question")
     fun getQuestions(): Call<List<Question>>
 
-    @GET("/livestream")
+    @GET("/livestream/?format=json")
     fun getOpentokIds(): Call<Opentok>
 }

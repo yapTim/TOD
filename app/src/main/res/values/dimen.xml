@@ -2,4 +2,13 @@
 <resources>
     <dimen name="pubs_screen_height">120dp</dimen>
     <dimen name="pubs_screen_width">90dp</dimen>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <dimen name="message_history_height">120dp</dimen>
+    <dimen name="message_history_vertical_margin">8dp</dimen>
+    <dimen name="message_vertical_margin">1dp</dimen>
+    <dimen name="message_horizontal_margin">2dp</dimen>
 </resources>
