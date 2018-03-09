@@ -4,9 +4,8 @@ import android.content.Context
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.widget.LinearLayout
-import com.example.cf.tutorialsondemand.adapter.MyAdapter
+import com.example.cf.tutorialsondemand.adapter.QuestionListAdapter
 import com.example.cf.tutorialsondemand.models.Question
 import com.example.cf.tutorialsondemand.retrofit.Connect
 import kotlinx.android.synthetic.main.activity_select_questions.*
@@ -29,7 +28,7 @@ class SelectQuestionsActivity : AppCompatActivity() {
         call.enqueue(object: Callback<List<Question>> {
             override fun onResponse(call: Call<List<Question>>, response: Response<List<Question>>) {
                 val questions: List<Question> = response.body()!!
-                recycler.adapter = MyAdapter(questions)
+                recycler.adapter = QuestionListAdapter(questions)
             }
 
             override fun onFailure(call: Call<List<Question>>?, t: Throwable?) {

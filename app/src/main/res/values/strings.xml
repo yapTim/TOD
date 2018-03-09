@@ -11,4 +11,6 @@
     <string name="switchCamBtn">Switch</string>
     <string name="muteBtn">Mute</string>
     <string name="togVideoBtn">Video</string>
+    <string name="chatFunction">Start a chat</string>
+    <string name="messageHint">Message</string>
 </resources>

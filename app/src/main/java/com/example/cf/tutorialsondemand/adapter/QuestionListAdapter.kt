@@ -1,7 +1,5 @@
 package com.example.cf.tutorialsondemand.adapter
 
-import android.content.Context
-import android.content.res.Resources
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +9,7 @@ import android.widget.TextView
 import com.example.cf.tutorialsondemand.R
 import com.example.cf.tutorialsondemand.models.Question
 
-class MyAdapter(private val q: List<Question>) : RecyclerView.Adapter<MyAdapter.ViewHolder>(){
+class QuestionListAdapter(private val q: List<Question>) : RecyclerView.Adapter<QuestionListAdapter.ViewHolder>(){
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val new_view = LayoutInflater.from(parent.context).inflate(R.layout.item_layout, parent, false)
         return ViewHolder(new_view)

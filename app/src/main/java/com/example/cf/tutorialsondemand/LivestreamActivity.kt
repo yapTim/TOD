@@ -65,40 +65,6 @@ class LivestreamActivity : AppCompatActivity(), Session.SessionListener, Publish
         false
     }
 
-    // for livestream permissions
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
-    }
-
-    @AfterPermissionGranted(RC_VIDEO_APP_PERM)
-    private fun requestPermissions() {
-        val perms: Array<String> = arrayOf(Manifest.permission.INTERNET, Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)
-
-        if(EasyPermissions.hasPermissions(this, *perms)) {
-
-            val connection = Connect("http://192.168.254.124:8000")
-            val returnCall = connection.connection.getOpentokIds()
-
-            returnCall.enqueue(object: Callback<Opentok> {
-                override fun onResponse(call: Call<Opentok>, response: Response<Opentok>) {
-                    val ids = response.body()!!
-
-                    mSession = Session.Builder(this@LivestreamActivity, "46067082", ids.s_id).build()
-                    mSession.setSessionListener(this@LivestreamActivity)
-                    mSession.connect(ids.access_token)
-                }
-
-                override fun onFailure(call: Call<Opentok>, t: Throwable?) {
-                    Log.i(logTag, "We lost boys")
-                }
-            })
-
-        } else {
-            EasyPermissions.requestPermissions(this, "We need access to your mic and camera", RC_VIDEO_APP_PERM, *perms)
-        }
-    }
-
     // Main function
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -206,6 +172,37 @@ class LivestreamActivity : AppCompatActivity(), Session.SessionListener, Publish
         private val UI_ANIMATION_DELAY = 300
     }
 
+    // for livestream permissions
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
+    }
+
+    @AfterPermissionGranted(RC_VIDEO_APP_PERM)
+    private fun requestPermissions() {
+        val perms: Array<String> = arrayOf(Manifest.permission.INTERNET, Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)
+
+        if(EasyPermissions.hasPermissions(this, *perms)) {
+
+            val connection = Connect("http://192.168.254.124:8000")
+            val returnCall = connection.connection.getOpentokIds()
+
+            returnCall.enqueue(object: Callback<Opentok> {
+                override fun onResponse(call: Call<Opentok>, response: Response<Opentok>) {
+                    val ids = response.body()!!
+                    initializeSession(ids.apiKey, ids.sessionId, ids.accessToken)
+                }
+
+                override fun onFailure(call: Call<Opentok>, t: Throwable?) {
+                    Log.i(logTag, "We lost boys")
+                }
+            })
+
+        } else {
+            EasyPermissions.requestPermissions(this, "We need access to your mic and camera", RC_VIDEO_APP_PERM, *perms)
+        }
+    }
+
     // Session
     override fun onConnected(session: Session?) {
         Log.i("LOl", "Connected")
@@ -213,7 +210,7 @@ class LivestreamActivity : AppCompatActivity(), Session.SessionListener, Publish
         mPublisher = Publisher.Builder(this).build()
         mPublisher.setPublisherListener(this)
 
-        findViewById<FrameLayout>(R.id.pubsView).addView(mPublisher?.view)
+        findViewById<FrameLayout>(R.id.pubsView).addView(mPublisher.view)
         mSession.publish(mPublisher)
     }
 
@@ -271,6 +268,12 @@ class LivestreamActivity : AppCompatActivity(), Session.SessionListener, Publish
         "Call dropped.".showToast(this)
         startActivity(i)
         finish()
+    }
+
+    fun initializeSession(apiKey: String, sessionId: String, accessToken: String) {
+        mSession = Session.Builder(this@LivestreamActivity, apiKey, sessionId).build()
+        mSession.setSessionListener(this@LivestreamActivity)
+        mSession.connect(accessToken)
     }
 }
 

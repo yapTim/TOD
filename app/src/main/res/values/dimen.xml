@@ -11,4 +11,7 @@
     <dimen name="message_history_vertical_margin">8dp</dimen>
     <dimen name="message_vertical_margin">1dp</dimen>
     <dimen name="message_horizontal_margin">2dp</dimen>
+
+    <dimen name="dp8">8dp</dimen>
+    <dimen name="dp16">16dp</dimen>
 </resources>

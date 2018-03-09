@@ -3,6 +3,7 @@ package com.example.cf.tutorialsondemand
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.transition.ChangeTransform
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -23,6 +24,11 @@ class MainActivity : AppCompatActivity() {
 
         livestream.setOnClickListener {
             startActivity(Intent(this, LivestreamActivity::class.java))
+            finish()
+        }
+
+        chat.setOnClickListener {
+            startActivity(Intent(this, ChatActivity::class.java))
             finish()
         }
     }
