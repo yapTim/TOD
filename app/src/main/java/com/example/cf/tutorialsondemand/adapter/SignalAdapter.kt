@@ -27,14 +27,16 @@ class SignalAdapter(context: Context) : ArrayAdapter<SignalMessage>(context, 0) 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
         val message: SignalMessage = getItem(position)
         var convertViewNew = convertView
-        val messageTextView = convertViewNew?.findViewById<TextView>(R.id.message_text)!!
+        val messageTextView = convertViewNew?.findViewById<TextView>(R.id.message_text)
 
         if(convertView == null) {
             val type: Int = getItemViewType(position)
             convertViewNew = LayoutInflater.from(context).inflate(viewTypes.get(type)!!, null)
         }
 
-        messageTextView.text = message.messageText
+        if(messageTextView != null) {
+            messageTextView.text = message.messageText
+        }
 
         return convertViewNew
     }

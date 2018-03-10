@@ -15,4 +15,10 @@
     <string name="messageHint">Message</string>
 
     <string name="url">http://192.168.254.124:8000</string>
+    <string name="title_activity_login">Sign in</string>
+
+    <!-- For LoginActivity -->
+    <string name="registerText">No Account? Sign up here!</string>
+    <string name="signFacebookText">Sign In With Facebook</string>
+    <string name="signGoogleText">Sign In With Google</string>
 </resources>

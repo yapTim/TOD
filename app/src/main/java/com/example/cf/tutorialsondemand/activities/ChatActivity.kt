@@ -95,7 +95,6 @@ class ChatActivity : AppCompatActivity(), Session.SessionListener, Session.Signa
         Log.e(logTag, "Error Code: ${opentokError.errorCode.name}")
     }
 
-
     // alert dialog
 
     fun showConfigError(alertTitle: String, errorMessage: String) {
