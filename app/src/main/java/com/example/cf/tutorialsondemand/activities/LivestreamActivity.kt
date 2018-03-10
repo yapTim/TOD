@@ -1,4 +1,4 @@
-package com.example.cf.tutorialsondemand
+package com.example.cf.tutorialsondemand.activities
 
 import android.Manifest
 import android.content.Context
@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.Toast
+import com.example.cf.tutorialsondemand.R
 import com.example.cf.tutorialsondemand.models.Opentok
 import com.example.cf.tutorialsondemand.retrofit.Connect
 import com.opentok.android.*
@@ -184,7 +185,7 @@ class LivestreamActivity : AppCompatActivity(), Session.SessionListener, Publish
 
         if(EasyPermissions.hasPermissions(this, *perms)) {
 
-            val connection = Connect("http://192.168.254.124:8000")
+            val connection = Connect(getString(R.string.url))
             val returnCall = connection.connection.getOpentokIds()
 
             returnCall.enqueue(object: Callback<Opentok> {

@@ -13,4 +13,6 @@
     <string name="togVideoBtn">Video</string>
     <string name="chatFunction">Start a chat</string>
     <string name="messageHint">Message</string>
+
+    <string name="url">http://192.168.254.124:8000</string>
 </resources>

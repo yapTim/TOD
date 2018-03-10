@@ -1,10 +1,11 @@
-package com.example.cf.tutorialsondemand
+package com.example.cf.tutorialsondemand.activities
 
 import android.content.Context
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.widget.LinearLayout
+import com.example.cf.tutorialsondemand.R
 import com.example.cf.tutorialsondemand.adapter.QuestionListAdapter
 import com.example.cf.tutorialsondemand.models.Question
 import com.example.cf.tutorialsondemand.retrofit.Connect

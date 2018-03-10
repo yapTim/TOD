@@ -1,4 +1,4 @@
-package com.example.cf.tutorialsondemand
+package com.example.cf.tutorialsondemand.activities
 
 import android.content.Context
 import android.content.DialogInterface
@@ -6,12 +6,11 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.util.Log
-import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ListView
-import android.widget.TextView
+import com.example.cf.tutorialsondemand.R
 import com.example.cf.tutorialsondemand.adapter.SignalAdapter
 import com.example.cf.tutorialsondemand.models.Opentok
 import com.example.cf.tutorialsondemand.models.SignalMessage
@@ -26,34 +25,34 @@ import retrofit2.Response
 
 class ChatActivity : AppCompatActivity(), Session.SessionListener, Session.SignalListener {
     val signalType = "text-signal"
-    lateinit var session: Session
+    var session: Session? = null
     val logTag = ChatActivity::class.simpleName
-
-    val editText = findViewById<EditText>(R.id.message_edit_text)
-    val listText = findViewById<ListView>(R.id.message_history_list_view)
-
-    val messageHistory = SignalAdapter(this)
+    lateinit var editText: EditText
+    lateinit var listText: ListView
+    lateinit var messageHistory: SignalAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
 
+        messageHistory = SignalAdapter(this)
+        editText = findViewById(R.id.message_edit_text)
+        listText = findViewById(R.id.message_history_list_view)
+
         listText.adapter = messageHistory
 
-        editText.setOnKeyListener(View.OnKeyListener { v, actionId, event ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
+        editText.setOnEditorActionListener { v, actionId, event ->
+            if(actionId == EditorInfo.IME_ACTION_DONE){
                 val inputmanager = v.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 inputmanager.hideSoftInputFromWindow(v.windowToken, 0)
-//                sendMessage()
-                Log.d(logTag, "It works")
-                return@OnKeyListener true
+                sendMessage()
+                true
+            } else {
+                false
             }
-            false
-        })
+        }
 
-        editText.isEnabled = false
-
-        val conn = Connect("")
+        val conn = Connect(getString(R.string.url))
         val returnCall = conn.connection.getOpentokIds()
 
         returnCall.enqueue(object: Callback<Opentok> {
@@ -64,22 +63,22 @@ class ChatActivity : AppCompatActivity(), Session.SessionListener, Session.Signa
             }
 
             override fun onFailure(call: Call<Opentok>?, t: Throwable?) {
-
+                Log.e(logTag, "Retrofit Error: ${t.toString()}")
             }
         })
     }
 
     fun initializeSession(apiKey: String, sessionId: String, accessToken: String) {
         session = Session.Builder(this@ChatActivity, apiKey, sessionId).build()
-        session.setSessionListener(this@ChatActivity)
-        session.setSignalListener(this@ChatActivity)
-        session.connect(accessToken)
+        session?.setSessionListener(this@ChatActivity)
+        session?.setSignalListener(this@ChatActivity)
+        session?.connect(accessToken)
     }
 
     private fun sendMessage() {
         Log.d(logTag, "Send Message")
         val signal = SignalMessage(editText.text.toString())
-        session.sendSignal(signalType, signal.messageText)
+        session?.sendSignal(signalType, signal.messageText)
 
         editText.setText("")
     }
@@ -118,13 +117,20 @@ class ChatActivity : AppCompatActivity(), Session.SessionListener, Session.Signa
     override fun onPause() {
         Log.d(logTag, "onPause")
         super.onPause()
-        session.onPause()
+
+        if(session != null) {
+            session?.onResume()
+        }
     }
 
     override fun onResume() {
         Log.d(logTag, "onResume")
         super.onResume()
-        session.onResume()
+
+        if(session != null) {
+            session?.onResume()
+        }
+
     }
 
     //Session Listener

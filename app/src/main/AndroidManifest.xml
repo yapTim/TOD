@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -17,16 +17,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AskActivity"
+            android:name=".activities.AskActivity"
             android:label="Ask a Question" />
-        <activity android:name=".WaitingActivity" />
-        <activity android:name=".SelectQuestionsActivity" />
+        <activity android:name=".activities.WaitingActivity" />
+        <activity android:name=".activities.SelectQuestionsActivity" />
         <activity
-            android:name=".LivestreamActivity"
+            android:name=".activities.LivestreamActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_livestream"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
-        <activity android:name=".ChatActivity"></activity>
+        <activity android:name=".activities.ChatActivity"></activity>
     </application>
 
 </manifest>
