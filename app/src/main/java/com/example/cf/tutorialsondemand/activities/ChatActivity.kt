@@ -95,22 +95,6 @@ class ChatActivity : AppCompatActivity(), Session.SessionListener, Session.Signa
         Log.e(logTag, "Error Code: ${opentokError.errorCode.name}")
     }
 
-    // alert dialog
-
-    fun showConfigError(alertTitle: String, errorMessage: String) {
-        Log.e(logTag, "Error $alertTitle: $errorMessage")
-
-        AlertDialog.Builder(this)
-                .setTitle(alertTitle)
-                .setMessage(errorMessage)
-                .setPositiveButton("OK", DialogInterface.OnClickListener { dialog, which ->
-                    run {
-                        this@ChatActivity.finish()
-                    }
-                })
-                .show()
-    }
-
     // activity life cycles
 
     override fun onPause() {
@@ -143,15 +127,15 @@ class ChatActivity : AppCompatActivity(), Session.SessionListener, Session.Signa
     }
 
     override fun onError(session: Session?, error: OpentokError?) {
-        Log.i(logTag, "Error")
+        logOpentokError(error!!)
     }
 
     override fun onStreamDropped(session: Session?, stream: Stream?) {
-        Log.i(logTag, "Connected")
+        Log.i(logTag, "Stream Dropped")
     }
 
     override fun onStreamReceived(session: Session?, stream: Stream?) {
-        Log.i(logTag, "Connected")
+        Log.i(logTag, "Stream Received")
     }
 
     // signal listener
