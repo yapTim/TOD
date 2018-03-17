@@ -1,83 +1,100 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#0099cc"
-    tools:context="com.example.cf.tutorialsondemand.activities.LivestreamActivity">
+    tools:context="com.example.cf.tutorialsondemand.activities.LivestreamActivity"
+    android:orientation="vertical">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
          TextureView, etc. -->
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:id="@+id/videoFrameContainer"
+        android:layout_weight="2">
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/subsView"/>
+            android:id="@+id/videoContainer">
 
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/subsView"/>
+
+            <FrameLayout
+                android:layout_width="@dimen/pubs_screen_width"
+                android:layout_height="@dimen/pubs_screen_height"
+                android:id="@+id/pubsView"
+                android:layout_gravity="top|end"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:padding="2dp"
+                android:background="#FFFFFF"/>
+        </FrameLayout>
+
+
+        <!-- This FrameLayout insets its children based on system windows using
+             android:fitsSystemWindows. -->
         <FrameLayout
-            android:layout_width="@dimen/pubs_screen_width"
-            android:layout_height="@dimen/pubs_screen_height"
-            android:id="@+id/pubsView"
-            android:layout_gravity="top|end"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            android:padding="2dp"
-            android:background="#FFFFFF"/>
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            android:layout_weight="2">
+
+            <LinearLayout
+                android:id="@+id/fullscreen_content_controls"
+                style="?metaButtonBarStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
+                android:background="@color/black_overlay"
+                android:orientation="horizontal"
+                tools:ignore="UselessParent">
+
+                <Button
+                    android:id="@+id/drop_call_button"
+                    style="?metaButtonBarButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/dropCallBtn" />
+                <Button
+                    android:id="@+id/switch_camera_button"
+                    style="?metaButtonBarButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/switchCamBtn" />
+                <Button
+                    android:id="@+id/mute_mic_button"
+                    style="?metaButtonBarButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/muteBtn" />
+
+                <Button
+                    android:id="@+id/toggle_video_button"
+                    style="?metaButtonBarButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/togVideoBtn" />
+
+            </LinearLayout>
+
+        </FrameLayout>
+
     </FrameLayout>
-
-
-    <!-- This FrameLayout insets its children based on system windows using
-         android:fitsSystemWindows. -->
+    
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
+        android:layout_height="0dp">
 
-        <LinearLayout
-            android:id="@+id/fullscreen_content_controls"
-            style="?metaButtonBarStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
-            android:background="@color/black_overlay"
-            android:orientation="horizontal"
-            tools:ignore="UselessParent">
-
-            <Button
-                android:id="@+id/drop_call_button"
-                style="?metaButtonBarButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/dropCallBtn" />
-            <Button
-                android:id="@+id/switch_camera_button"
-                style="?metaButtonBarButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/switchCamBtn" />
-            <Button
-                android:id="@+id/mute_mic_button"
-                style="?metaButtonBarButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/muteBtn" />
-
-            <Button
-                android:id="@+id/toggle_video_button"
-                style="?metaButtonBarButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/togVideoBtn" />
-
-        </LinearLayout>
     </FrameLayout>
 
-</FrameLayout>
+</LinearLayout>

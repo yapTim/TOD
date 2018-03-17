@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:gravity="end">
 
     <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Local Message"
         android:id="@+id/message_text"
-        android:gravity="end"
-        android:layout_marginTop="@dimen/message_vertical_margin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/message_vertical_margin"
         android:layout_marginLeft="@dimen/message_horizontal_margin"
-        android:layout_marginRight="@dimen/message_horizontal_margin" />
+        android:layout_marginRight="@dimen/local_message_horizontal_margin"
+        android:layout_marginTop="@dimen/message_vertical_margin"
+        android:paddingBottom="8dp"
+        android:textColor="@color/colorChatText"
+        android:background="@drawable/local_chat_border"
+        android:fontFamily="Roboto"
+        android:text="Local Message" />
 
 </LinearLayout>

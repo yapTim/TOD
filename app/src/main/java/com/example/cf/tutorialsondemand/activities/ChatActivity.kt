@@ -35,23 +35,6 @@ class ChatActivity : AppCompatActivity(), Session.SessionListener, Session.Signa
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
 
-        messageHistory = SignalAdapter(this)
-        editText = findViewById(R.id.message_edit_text)
-        listText = findViewById(R.id.message_history_list_view)
-
-        listText.adapter = messageHistory
-
-        editText.setOnEditorActionListener { v, actionId, event ->
-            if(actionId == EditorInfo.IME_ACTION_DONE){
-                val inputmanager = v.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                inputmanager.hideSoftInputFromWindow(v.windowToken, 0)
-                sendMessage()
-                true
-            } else {
-                false
-            }
-        }
-
         val conn = Connect(getString(R.string.url))
         val returnCall = conn.connection.getOpentokIds()
 
@@ -66,6 +49,23 @@ class ChatActivity : AppCompatActivity(), Session.SessionListener, Session.Signa
                 Log.e(logTag, "Retrofit Error: ${t.toString()}")
             }
         })
+
+        messageHistory = SignalAdapter(this)
+        editText = findViewById(R.id.message_edit_text)
+        listText = findViewById(R.id.message_history_list_view)
+
+        listText.adapter = messageHistory
+
+        editText.setOnEditorActionListener { v, actionId, event ->
+            if(actionId == EditorInfo.IME_ACTION_DONE && editText.text.toString() != ""){
+                val inputmanager = v.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                inputmanager.hideSoftInputFromWindow(v.windowToken, 0)
+                sendMessage()
+                true
+            } else {
+                false
+            }
+        }
     }
 
     fun initializeSession(apiKey: String, sessionId: String, accessToken: String) {
@@ -77,6 +77,7 @@ class ChatActivity : AppCompatActivity(), Session.SessionListener, Session.Signa
 
     private fun sendMessage() {
         Log.d(logTag, "Send Message")
+
         val signal = SignalMessage(editText.text.toString())
         session?.sendSignal(signalType, signal.messageText)
 
@@ -116,14 +117,21 @@ class ChatActivity : AppCompatActivity(), Session.SessionListener, Session.Signa
 
     }
 
-    //Session Listener
+    override fun onDestroy() {
+        super.onDestroy()
+        session?.disconnect()
+    }
+
+    // Session Listener
 
     override fun onConnected(session: Session?) {
         Log.i(logTag, "Connected")
+        editText.isEnabled = true
     }
 
     override fun onDisconnected(session: Session?) {
         Log.i(logTag, "Disconnected")
+        editText.isEnabled = false
     }
 
     override fun onError(session: Session?, error: OpentokError?) {
@@ -147,7 +155,4 @@ class ChatActivity : AppCompatActivity(), Session.SessionListener, Session.Signa
             showMessage(data!!, remote!!)
         }
     }
-
-
-
 }

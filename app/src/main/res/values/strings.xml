@@ -17,8 +17,19 @@
     <string name="url">http://192.168.254.124:8000</string>
     <string name="title_activity_login">Sign in</string>
 
+    <!-- For Facebook Login API -->
+    <string name="facebook_app_id">228253279513</string>
+    <string name="fb_login_protocol_scheme">fb228253279513</string>
+
     <!-- For LoginActivity -->
     <string name="registerText">No Account? Sign up here!</string>
     <string name="signFacebookText">Sign In With Facebook</string>
     <string name="signGoogleText">Sign In With Google</string>
+
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

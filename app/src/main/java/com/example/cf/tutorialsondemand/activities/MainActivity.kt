@@ -1,8 +1,11 @@
 package com.example.cf.tutorialsondemand.activities
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import com.example.cf.tutorialsondemand.R
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -14,22 +17,29 @@ class MainActivity : AppCompatActivity() {
 
         student.setOnClickListener {
             startActivity(Intent(this, AskActivity::class.java))
-            finish()
         }
 
         tutor.setOnClickListener {
             startActivity(Intent(this, SelectQuestionsActivity::class.java))
-            finish()
         }
 
         livestream.setOnClickListener {
             startActivity(Intent(this, LivestreamActivity::class.java))
-            finish()
         }
 
         chat.setOnClickListener {
             startActivity(Intent(this, ChatActivity::class.java))
-            finish()
         }
+    }
+
+    override fun onBackPressed() {
+        AlertDialog.Builder(this)
+                .setTitle("Do you want to exit?")
+                .setPositiveButton("OK", DialogInterface.OnClickListener { dialog, which ->
+                    finish()
+                })
+                .setNegativeButton("BACK", DialogInterface.OnClickListener { dialog, which -> })
+                .create()
+                .show()
     }
 }
