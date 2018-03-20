@@ -18,8 +18,8 @@
     <string name="title_activity_login">Sign in</string>
 
     <!-- For Facebook Login API -->
-    <string name="facebook_app_id">228253279513</string>
-    <string name="fb_login_protocol_scheme">fb228253279513</string>
+    <string name="facebook_app_id">186047235517026</string>
+    <string name="fb_login_protocol_scheme">fb186047235517026</string>
 
     <!-- For LoginActivity -->
     <string name="registerText">No Account? Sign up here!</string>
