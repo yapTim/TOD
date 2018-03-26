@@ -18,7 +18,7 @@
         <activity android:name=".activities.MainActivity" />
         <activity
             android:name=".activities.AskActivity"
-            android:label="Ask a Question" />
+            android:label="@string/askHeader" />
         <activity android:name=".activities.WaitingActivity" />
         <activity android:name=".activities.SelectQuestionsActivity" />
         <activity
@@ -46,7 +46,6 @@
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
-
         <activity
             android:name="com.facebook.CustomTabActivity"
             android:exported="true">
@@ -61,8 +60,8 @@
         </activity>
         <!-- End of Facebook -->
         <activity
-            android:name=".activities.FacebookLinkActivity"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation" />
+            android:name=".activities.SelectActionActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
     </application>
 
 </manifest>

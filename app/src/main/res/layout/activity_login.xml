@@ -13,14 +13,14 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        app:layout_constraintGuide_end="334dp" />
+        app:layout_constraintGuide_percent="0.1" />
 
     <android.support.constraint.Guideline
         android:id="@+id/rightVerticalGuideline"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        app:layout_constraintGuide_end="50dp" />
+        app:layout_constraintGuide_percent="0.9" />
 
     <com.facebook.login.widget.LoginButton
         android:id="@+id/loginFacebook"
@@ -30,6 +30,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:textSize="14sp"
         app:layout_constraintBottom_toTopOf="@+id/loginGoogle"
         app:layout_constraintEnd_toStartOf="@+id/rightVerticalGuideline"
         app:layout_constraintStart_toStartOf="@+id/leftVerticalGuideline" />

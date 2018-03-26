@@ -12,5 +12,6 @@ class Connect(url: String) {
     private val retrofit = build.client(OkHttpClient.Builder().build()).build()
 
     val connection = retrofit.create(ServerQuery::class.java)
-
+    val connectionFacebook = retrofit.create(FacebookLoginQuery::class.java)
+    val connectionCategory = retrofit.create((CategoryQuery::class.java))
 }
