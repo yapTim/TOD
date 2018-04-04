@@ -9,9 +9,10 @@ class Connect(url: String) {
             .baseUrl(url)
             .addConverterFactory(GsonConverterFactory.create())
 
-    private val retrofit = build.client(OkHttpClient.Builder().build()).build()
+    private val retrofit = build.client(OkHttpClient.Builder().retryOnConnectionFailure(true).build()).build()
 
     val connection = retrofit.create(ServerQuery::class.java)
     val connectionFacebook = retrofit.create(FacebookLoginQuery::class.java)
     val connectionCategory = retrofit.create((CategoryQuery::class.java))
+    val connectionGoogle = retrofit.create(GoogleLoginQuery::class.java)
 }

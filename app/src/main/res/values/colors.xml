@@ -3,9 +3,10 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-
+    <color name="colorWhite">#FFFFFF</color>
     <color name="colorChatLocal">#66BB6A</color>
     <color name="colorChatRemote">#F5F5F5</color>
     <color name="colorChatText">#000000</color>
     <color name="black_overlay">#66000000</color>
+    <color name="colorCategoryBox">#1b1b1b</color>
 </resources>

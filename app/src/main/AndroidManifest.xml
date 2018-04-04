@@ -18,7 +18,8 @@
         <activity android:name=".activities.MainActivity" />
         <activity
             android:name=".activities.AskActivity"
-            android:label="@string/askHeader" />
+            android:label="@string/askHeader"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity android:name=".activities.WaitingActivity" />
         <activity android:name=".activities.SelectQuestionsActivity" />
         <activity
@@ -62,6 +63,7 @@
         <activity
             android:name=".activities.SelectActionActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity android:name=".activities.ProfileActivity"></activity>
     </application>
 
 </manifest>

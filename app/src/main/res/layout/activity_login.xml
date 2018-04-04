@@ -35,7 +35,7 @@
         app:layout_constraintEnd_toStartOf="@+id/rightVerticalGuideline"
         app:layout_constraintStart_toStartOf="@+id/leftVerticalGuideline" />
 
-    <Button
+    <com.google.android.gms.common.SignInButton
         android:id="@+id/loginGoogle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -46,5 +46,30 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/rightVerticalGuideline"
         app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="@+id/leftVerticalGuideline"/>
+
+    <Button
+        android:id="@+id/bypassButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="40dp"
+        android:text="@string/placeholder"
+        app:layout_constraintEnd_toStartOf="@+id/rightVerticalGuideline"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/leftVerticalGuideline"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/logoutGoogle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:text="Log out"
+        app:layout_constraintBottom_toTopOf="@+id/loginFacebook"
+        app:layout_constraintEnd_toStartOf="@+id/rightVerticalGuideline"
         app:layout_constraintStart_toStartOf="@+id/leftVerticalGuideline" />
 </android.support.constraint.ConstraintLayout>

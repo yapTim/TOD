@@ -35,10 +35,10 @@ class MainActivity : AppCompatActivity() {
     override fun onBackPressed() {
         AlertDialog.Builder(this)
                 .setTitle("Do you want to exit?")
-                .setPositiveButton("OK", DialogInterface.OnClickListener { dialog, which ->
+                .setPositiveButton("OK", DialogInterface.OnClickListener { _, _ ->
                     finish()
                 })
-                .setNegativeButton("BACK", DialogInterface.OnClickListener { dialog, which -> })
+                .setNegativeButton("BACK", DialogInterface.OnClickListener { _, _ -> })
                 .create()
                 .show()
     }

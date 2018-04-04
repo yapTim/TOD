@@ -1,4 +1,7 @@
 <resources>
+    <!-- Preference Keys -->
+    <string name="login_preference_key">LOGIN_INFO</string>
+
     <string name="placeholder">Sample Text</string>
     <string name="app_name">TutorialsOnDemand</string>
     <string name="startLive">Start Livestream</string>
@@ -14,6 +17,9 @@
 
     <string name="url">http://192.168.254.124:8000</string>
     <string name="title_activity_login">Sign in</string>
+
+    <!-- for Google Login API -->
+    <string name="google_backend_id">616135059456-dd6t2ectq3bp98jgn31res5vn57vjn41.apps.googleusercontent.com</string>
 
     <!-- For Facebook Login API -->
     <string name="facebook_app_id">186047235517026</string>
@@ -36,6 +42,9 @@
     <!-- For AskActivity -->
     <string name="askHeader">Select Category</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- For all action bar buttons -->
+    <string name="sendAction">Select Categories</string>
+    <string name="categoryCount">%1$d Selected</string>
 </resources>

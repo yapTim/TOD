@@ -56,7 +56,7 @@ class ChatActivity : AppCompatActivity(), Session.SessionListener, Session.Signa
 
         listText.adapter = messageHistory
 
-        editText.setOnEditorActionListener { v, actionId, event ->
+        editText.setOnEditorActionListener { v, actionId, _ ->
             if(actionId == EditorInfo.IME_ACTION_DONE && editText.text.toString() != ""){
                 val inputmanager = v.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 inputmanager.hideSoftInputFromWindow(v.windowToken, 0)
