@@ -34,21 +34,21 @@ class SelectQuestionsActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefres
     }
 
     fun getQuestionList() {
-        val conn = Connect(getString(R.string.url))
-        val call = conn.connection.getQuestions()
-
-        call.enqueue(object : Callback<List<Question>> {
-            override fun onResponse(call: Call<List<Question>>, response: Response<List<Question>>) {
-                val questions: List<Question> = response.body()!!
-                adapter = QuestionListAdapter(questions)
-                recycler.adapter = adapter
-                refreshQuestions.isRefreshing = false
-            }
-
-            override fun onFailure(call: Call<List<Question>>?, t: Throwable?) {
-                txtHere.text = t.toString()
-            }
-        })
+//        val conn = Connect(getString(R.string.url))
+//        val call = conn.connection.getQuestions()
+//
+//        call.enqueue(object : Callback<List<Question>> {
+//            override fun onResponse(call: Call<List<Question>>, response: Response<List<Question>>) {
+//                val questions: List<Question> = response.body()!!
+//                adapter = QuestionListAdapter(questions)
+//                recycler.adapter = adapter
+//                refreshQuestions.isRefreshing = false
+//            }
+//
+//            override fun onFailure(call: Call<List<Question>>?, t: Throwable?) {
+//                txtHere.text = t.toString()
+//            }
+//        })
     }
 
     override fun onRefresh() {

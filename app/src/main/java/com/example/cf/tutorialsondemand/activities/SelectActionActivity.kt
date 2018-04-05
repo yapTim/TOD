@@ -19,7 +19,7 @@ class SelectActionActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_select_action)
 
-        val adapter = HomeFragmentAdaptor(supportFragmentManager, this@SelectActionActivity)
+        val adapter = HomeFragmentAdaptor(supportFragmentManager)
         fragmentView.adapter = adapter
 
         fragmentTab.setupWithViewPager(fragmentView)
@@ -37,19 +37,6 @@ class SelectActionActivity : AppCompatActivity() {
 
             }
         })
-
-        welcome.text = getString(R.string.welcomeText, "Test")
-
-        askCard.setOnClickListener {
-            val intent = Intent(this, AskActivity::class.java)
-            intent.putExtra("action", "ask")
-            startActivity(intent)
-        }
-
-        answerCard.setOnClickListener {
-            val intent = Intent(this, AskActivity::class.java)
-            intent.putExtra("action", "answer")
-            startActivity(intent)
-        }
     }
+
 }

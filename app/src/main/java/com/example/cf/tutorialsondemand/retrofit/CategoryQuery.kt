@@ -13,12 +13,12 @@ import retrofit2.http.POST
  */
 interface CategoryQuery {
 
-    @GET("/category")
+    @GET("/category/")
     fun getCategory(): Call<List<QuestionCategory>>
 
     @FormUrlEncoded
     @POST("/tutor/")
     fun sendTutorCategory(@Field("user") userId: Int,
                           @Field("category") categoryList: IntArray,
-                          @Field("status") isAvailable: Int): Call<TutorCategory>
+                          @Field("status") isAvailable: Int): Call<Boolean>
 }

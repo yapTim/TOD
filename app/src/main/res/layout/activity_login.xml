@@ -72,4 +72,5 @@
         app:layout_constraintBottom_toTopOf="@+id/loginFacebook"
         app:layout_constraintEnd_toStartOf="@+id/rightVerticalGuideline"
         app:layout_constraintStart_toStartOf="@+id/leftVerticalGuideline" />
+
 </android.support.constraint.ConstraintLayout>

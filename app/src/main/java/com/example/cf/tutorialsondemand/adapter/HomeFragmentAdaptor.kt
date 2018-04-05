@@ -4,21 +4,26 @@ import android.content.Context
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
+import com.example.cf.tutorialsondemand.fragments.ProfileFragment
 import com.example.cf.tutorialsondemand.fragments.SelectActionFragment
 
-class HomeFragmentAdaptor(fragmentManager: FragmentManager, c: Context) : FragmentPagerAdapter(fragmentManager) {
+class HomeFragmentAdaptor(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
 
-    val NUM_ITEMS = 3
-    private val tabTitles = mutableListOf("Tab1", "Tab2", "Tab3")
-    private val context: Context = c
+    val numFragments = 3
+    private val tabTitles = mutableListOf("Home", "Connect", "Profile")
 
-    override fun getCount(): Int = NUM_ITEMS
+    override fun getCount(): Int = numFragments
 
     override fun getItem(position: Int): Fragment? {
-        return SelectActionFragment.newInstance(position+1, "This is a title")
+
+        when (position) {
+            0 ->  return SelectActionFragment.newInstance(position, "title for activity $position")
+            1 ->  return ProfileFragment.newInstance("Title $position", 2)
+            2 ->  return ProfileFragment.newInstance("Title $position", 3)
+            else -> return null
+        }
+
     }
 
-    override fun getPageTitle(position: Int): CharSequence? {
-        return tabTitles[position]
-    }
+    override fun getPageTitle(position: Int): CharSequence? = tabTitles[position]
 }

@@ -1,5 +1,7 @@
 package com.example.cf.tutorialsondemand.activities
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.content.res.ResourcesCompat
@@ -47,23 +49,42 @@ class AskActivity : AppCompatActivity() {
 
                             val conn = Connect(getString(R.string.url))
                                     .connectionCategory
-                                    .sendTutorCategory(2, categoryList.toIntArray(), 0)
+                                    .sendTutorCategory(this@AskActivity.getSharedPreferences(getString(R.string.login_preference_key), Context.MODE_PRIVATE).getInt("userId", 0)
+                                            , categoryList.toIntArray()
+                                            , 0)
 
-                            conn.enqueue(object: Callback<TutorCategory> {
-                                override fun onResponse(call: Call<TutorCategory>?, response: Response<TutorCategory>?) {
+                            conn.enqueue(object: Callback<Boolean> {
+                                override fun onResponse(call: Call<Boolean>?, response: Response<Boolean>?) {
                                     val returnedObject = response?.body()
                                     Log.i(AskActivity::class.simpleName, "This was returned: ${returnedObject.toString()}")
 
                                 }
 
-                                override fun onFailure(call: Call<TutorCategory>?, t: Throwable?) {
+                                override fun onFailure(call: Call<Boolean>?, t: Throwable?) {
                                     Log.e(AskActivity::class.simpleName, "Error: ${t.toString()}")
                                 }
                             })
                         }
 
                         "ask" -> {
-                            // Send things for the student
+
+                            //To be changed
+                            val sendCategory: IntArray = intArrayOf(currentId)
+                            val conn = Connect(getString(R.string.url))
+                                    .connectionCategory
+                                    .sendTutorCategory(1, sendCategory, 0)
+
+                            conn.enqueue(object: Callback<Boolean> {
+                                override fun onResponse(call: Call<Boolean>?, response: Response<Boolean>?) {
+                                    val returnedObject = response?.body()
+                                    Log.i(AskActivity::class.simpleName, "This was returned: ${returnedObject.toString()}")
+
+                                }
+
+                                override fun onFailure(call: Call<Boolean>?, t: Throwable?) {
+                                    Log.e(AskActivity::class.simpleName, "Error: ${t.toString()}")
+                                }
+                            })
                         }
 
                     }

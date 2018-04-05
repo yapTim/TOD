@@ -1,20 +1,19 @@
 package com.example.cf.tutorialsondemand.activities
 
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.v4.app.ActivityCompat.startActivityForResult
+import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
 import com.example.cf.tutorialsondemand.R
-import com.example.cf.tutorialsondemand.R.id.loginGoogle
-import com.example.cf.tutorialsondemand.R.id.logoutButton
 import com.example.cf.tutorialsondemand.retrofit.Connect
 import com.facebook.*
+import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.facebook.login.widget.LoginButton
 import java.util.*
@@ -27,6 +26,9 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import kotlinx.android.synthetic.main.activity_login.*
+import org.jetbrains.anko.alert
+import org.jetbrains.anko.noButton
+import org.jetbrains.anko.yesButton
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -54,19 +56,26 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onStart() {
 
+        // For google
         googleSignInClient = GoogleSignIn.getClient(this, signInOptions)
         val googleAccount = GoogleSignIn.getLastSignedInAccount(this)
 
         if (googleAccount != null) {
 
-            Log.i(this@LoginActivity::class.simpleName, "It's not null")
+            Log.i(this@LoginActivity::class.simpleName, "Still logged in")
             logoutGoogle.visibility = View.VISIBLE
             loginGoogle.isEnabled = false
 
 //            startActivity(Intent(this,SelectActionActivity::class.java))
         } else {
 
-            Log.i(this@LoginActivity::class.simpleName, "It's null")
+            Log.i(this@LoginActivity::class.simpleName, "Not logged in")
+
+        }
+
+        // for Facebook
+
+        if(AccessToken.getCurrentAccessToken() != null) {
 
         }
 
@@ -89,7 +98,7 @@ class LoginActivity : AppCompatActivity() {
 
         //Google
 
-        val logoutBtn: Button = findViewById(R.id.logoutButton)
+        val logoutBtn: Button = findViewById(R.id.logoutGoogle)
         logoutBtn.visibility = View.GONE
 
         signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -123,13 +132,14 @@ class LoginActivity : AppCompatActivity() {
 
         try {
 
-            Log.i(this@LoginActivity::class.simpleName, "It's in loler")
             val account = completedTask.getResult(ApiException::class.java)
             Log.i(this@LoginActivity::class.simpleName, "It is: ${account.email}")
 
             if(account.idToken != null) {
-                Log.i(this@LoginActivity::class.simpleName, "It's I logged in")
+
+                Log.i(this@LoginActivity::class.simpleName, "It is: ${account.idToken}")
                 sendGoogleToken(account.idToken!!)
+
             }
 
             //startActivity(Intent(this, SelectActionActivity::class.java))
@@ -176,9 +186,25 @@ class LoginActivity : AppCompatActivity() {
     private fun signOutGoogle() {
         googleSignInClient.signOut().addOnCompleteListener(this@LoginActivity, object: OnCompleteListener<Void> {
             override fun onComplete(task: Task<Void>) {
-                Log.i(LoginActivity::class.simpleName, "I logged out")
+//                AlertDialog.Builder(this)
+//                        .setTitle("Do you want to exit?")
+//                        .setPositiveButton("OK", DialogInterface.OnClickListener { _, _ ->
+//                            finish()
+//                        })
+//                        .setNegativeButton("BACK", DialogInterface.OnClickListener { _, _ -> })
+//                        .create()
+//                        .show()
+                removeLoginPreference()
                 logoutGoogle.visibility = View.GONE
                 loginGoogle.isEnabled = true
+                val loginPreference = this@LoginActivity.getSharedPreferences(getString(R.string.login_preference_key), Context.MODE_PRIVATE)
+                if(loginPreference.contains("method")) {
+                    Log.i(LoginActivity::class.simpleName, "I failed")
+                } else {
+                    Log.i(LoginActivity::class.simpleName, "I logged out")
+
+                }
+
             }
         })
     }
@@ -200,7 +226,6 @@ class LoginActivity : AppCompatActivity() {
 
                 val accessToken = result?.accessToken?.token!!
                 Log.d(LoginActivity::class.simpleName, " the token is: $accessToken")
-
                 sendFacebookToken(accessToken)
 
             }
@@ -227,15 +252,21 @@ class LoginActivity : AppCompatActivity() {
                 .connectionFacebook
                 .loginFacebook(accessToken)
 
-        connection.enqueue(object : Callback<Any> {
+        connection.enqueue(object : Callback<Int> {
 
-            override fun onResponse(call: Call<Any>?, response: Response<Any>) {
+            override fun onResponse(call: Call<Int>?, response: Response<Int>) {
                 val respo = response.body().toString()
                 Log.d(LoginActivity::class.simpleName, "It was $respo")
-                setLoginPreference(1, "facebook")
+
+                setLoginPreference(respo.toInt(), "facebook")
+
+                Log.d(LoginActivity::class.simpleName, "It was ${this@LoginActivity
+                        .getSharedPreferences(getString(R.string.login_preference_key), Context.MODE_PRIVATE)
+                        .getInt("userId", 0)}")
+
             }
 
-            override fun onFailure(call: Call<Any>?, t: Throwable?) {
+            override fun onFailure(call: Call<Int>?, t: Throwable?) {
                 Log.e(LoginActivity::class.simpleName, "It was an error ${t.toString()}")
                 if (t?.message == "unexpected end of stream"){sendFacebookToken(accessToken)}
             }
@@ -249,22 +280,26 @@ class LoginActivity : AppCompatActivity() {
         // Shared Preference
         val loginPreference = this@LoginActivity.getSharedPreferences(getString(R.string.login_preference_key), Context.MODE_PRIVATE)
         with (loginPreference.edit()) {
-//            putString("accessToken", userId)
-            putString("loginApi", method)
+            putInt("userId", userId)
             apply()
         }
 
     }
 
-    fun removeLoginPreference(userId: Int, method: String) {
-
+    fun removeLoginPreference() {
         // Shared Preference
         val loginPreference = this@LoginActivity.getSharedPreferences(getString(R.string.login_preference_key), Context.MODE_PRIVATE)
         with (loginPreference.edit()) {
-            //            putString("accessToken", userId)
-            putString("loginApi", method)
-            apply()
+            this.clear().apply()
         }
 
+    }
+
+    override fun onBackPressed() {
+        alert(getString(R.string.exitAppAlertMessage)) {
+            title = getString(R.string.exitAppAlertTitle)
+            yesButton { finish() }
+            noButton {  }
+        }.show()
     }
 }

@@ -7,5 +7,5 @@ import retrofit2.http.*
 interface FacebookLoginQuery {
     @FormUrlEncoded
     @POST("/register-by-token/facebook/")
-    fun loginFacebook(@Field("access_token") fbApiAuthToken: String): Call<Any>
+    fun loginFacebook(@Field("access_token") fbApiAuthToken: String): Call<Int>
 }

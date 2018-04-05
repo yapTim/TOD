@@ -10,9 +10,8 @@ import retrofit2.http.Query
  * Created by CF on 2/28/2018.
  */
 interface ServerQuery {
-    @GET("/question/?format=json")
-    fun getQuestions(): Call<List<Question>>
 
     @GET("/livestream/?format=json")
     fun getOpentokIds(): Call<Opentok>
+
 }

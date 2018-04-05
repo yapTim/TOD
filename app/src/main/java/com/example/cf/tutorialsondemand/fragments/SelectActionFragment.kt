@@ -1,31 +1,23 @@
 package com.example.cf.tutorialsondemand.fragments
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.CardView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 
 import com.example.cf.tutorialsondemand.R
+import com.example.cf.tutorialsondemand.activities.AskActivity
 import kotlinx.android.synthetic.main.fragment_select_action.*
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "someTitle"
 private const val ARG_PARAM2 = "somePage"
 
-/**
- * A simple [Fragment] subclass.
- * Activities that contain this fragment must implement the
- * [SelectActionFragment.OnFragmentInteractionListener] interface
- * to handle interaction events.
- * Use the [SelectActionFragment.newInstance] factory method to
- * create an instance of this fragment.
- *
- */
 class SelectActionFragment : Fragment() {
 
     private var title: String = " "
@@ -43,7 +35,21 @@ class SelectActionFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val view: View = inflater.inflate(R.layout.fragment_select_action, container, false)
-        view.findViewById<TextView>(R.id.txtView).text = "This is $title -- Page $page"
+        view.findViewById<TextView>(R.id.selectActionWelcome).text = getString(R.string.welcomeText, "Test")
+        val askCardView = view.findViewById<CardView>(R.id.askCard)
+        val answerCardView = view.findViewById<CardView>(R.id.answerCard)
+
+        askCardView.setOnClickListener {
+            val intent = Intent(context, AskActivity::class.java)
+            intent.putExtra("action", "ask")
+            startActivity(intent)
+        }
+
+        answerCardView.setOnClickListener {
+            val intent = Intent(context, AskActivity::class.java)
+            intent.putExtra("action", "answer")
+            startActivity(intent)
+        }
 
         return view
     }

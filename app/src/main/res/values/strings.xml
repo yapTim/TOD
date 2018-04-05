@@ -19,7 +19,9 @@
     <string name="title_activity_login">Sign in</string>
 
     <!-- for Google Login API -->
-    <string name="google_backend_id">616135059456-dd6t2ectq3bp98jgn31res5vn57vjn41.apps.googleusercontent.com</string>
+    <!--<string name="google_backend_id">616135059456-lib14ph7lujh1rqhc1q2aaneqrp0qhjj.apps.googleusercontent.com</string>-->
+    <string name="google_backend_id">616135059456-lib14ph7lujh1rqhc1q2aaneqrp0qhjj.apps.googleusercontent.com</string>
+
 
     <!-- For Facebook Login API -->
     <string name="facebook_app_id">186047235517026</string>
@@ -47,4 +49,10 @@
     <!-- For all action bar buttons -->
     <string name="sendAction">Select Categories</string>
     <string name="categoryCount">%1$d Selected</string>
+
+    <!-- For all Alert Dialogs -->
+    <string name="logOutAlertTitle">LOG OUT</string>
+    <string name="logOutAlertMessage">Are you sure you want to log out?</string>
+    <string name="exitAppAlertTitle">EXIT TUTORIALS ON DEMAND</string>
+    <string name="exitAppAlertMessage">Are you sure you want to exit?</string>
 </resources>
