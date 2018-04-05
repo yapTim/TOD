@@ -33,7 +33,7 @@ class SelectActionFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
+
         val view: View = inflater.inflate(R.layout.fragment_select_action, container, false)
         view.findViewById<TextView>(R.id.selectActionWelcome).text = getString(R.string.welcomeText, "Test")
         val askCardView = view.findViewById<CardView>(R.id.askCard)
@@ -55,15 +55,6 @@ class SelectActionFragment : Fragment() {
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment SelectActionFragment.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: Int, param2: String) =
                 SelectActionFragment().apply {

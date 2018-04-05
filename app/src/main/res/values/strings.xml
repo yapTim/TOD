@@ -36,7 +36,7 @@
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
 
-    <!-- For SelectActionActivity -->
+    <!-- For HomeHomeActivity -->
     <string name="welcomeText">Welcome, %1$s, to Tutorials on Demand\nWhat would you like to do?</string>
     <string name="askText">Ask a Question</string>
     <string name="answerText">Answer a Question</string>
@@ -55,4 +55,10 @@
     <string name="logOutAlertMessage">Are you sure you want to log out?</string>
     <string name="exitAppAlertTitle">EXIT TUTORIALS ON DEMAND</string>
     <string name="exitAppAlertMessage">Are you sure you want to exit?</string>
+    <string name="cancelFindAlertMessage">Are you sure you want to stop?</string>
+    <string name="cancelFindAlertTitle">Stop</string>
+
+    <!-- Waiting activity -->
+    <string name="waitingMessage">Searching for a %1$s</string>
+
 </resources>

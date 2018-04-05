@@ -1,7 +1,7 @@
 package com.example.cf.tutorialsondemand.activities
 
 import android.content.Context
-import android.content.SharedPreferences
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.content.res.ResourcesCompat
@@ -12,8 +12,8 @@ import android.widget.Toast
 import com.example.cf.tutorialsondemand.R
 import com.example.cf.tutorialsondemand.adapter.CardAdapter
 import com.example.cf.tutorialsondemand.models.QuestionCategory
-import com.example.cf.tutorialsondemand.models.TutorCategory
 import com.example.cf.tutorialsondemand.retrofit.Connect
+import org.jetbrains.anko.toast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -44,49 +44,8 @@ class AskActivity : AppCompatActivity() {
             when (it.itemId) {
                 R.id.selectCategoryButton -> {
                     when (action) {
-
-                        "answer" -> {
-
-                            val conn = Connect(getString(R.string.url))
-                                    .connectionCategory
-                                    .sendTutorCategory(this@AskActivity.getSharedPreferences(getString(R.string.login_preference_key), Context.MODE_PRIVATE).getInt("userId", 0)
-                                            , categoryList.toIntArray()
-                                            , 0)
-
-                            conn.enqueue(object: Callback<Boolean> {
-                                override fun onResponse(call: Call<Boolean>?, response: Response<Boolean>?) {
-                                    val returnedObject = response?.body()
-                                    Log.i(AskActivity::class.simpleName, "This was returned: ${returnedObject.toString()}")
-
-                                }
-
-                                override fun onFailure(call: Call<Boolean>?, t: Throwable?) {
-                                    Log.e(AskActivity::class.simpleName, "Error: ${t.toString()}")
-                                }
-                            })
-                        }
-
-                        "ask" -> {
-
-                            //To be changed
-                            val sendCategory: IntArray = intArrayOf(currentId)
-                            val conn = Connect(getString(R.string.url))
-                                    .connectionCategory
-                                    .sendTutorCategory(1, sendCategory, 0)
-
-                            conn.enqueue(object: Callback<Boolean> {
-                                override fun onResponse(call: Call<Boolean>?, response: Response<Boolean>?) {
-                                    val returnedObject = response?.body()
-                                    Log.i(AskActivity::class.simpleName, "This was returned: ${returnedObject.toString()}")
-
-                                }
-
-                                override fun onFailure(call: Call<Boolean>?, t: Throwable?) {
-                                    Log.e(AskActivity::class.simpleName, "Error: ${t.toString()}")
-                                }
-                            })
-                        }
-
+                        "answer" -> startQueueTutor()
+                        "ask" -> startQueueStudent()
                     }
                 }
             }
@@ -100,6 +59,7 @@ class AskActivity : AppCompatActivity() {
                 .getCategory()
 
         conn.enqueue(object: Callback<List<QuestionCategory>> {
+
             override fun onResponse(call: Call<List<QuestionCategory>>, response: Response<List<QuestionCategory>>) {
                 val returnedList = response.body()!!
                 categoryGrid.adapter = CardAdapter(this@AskActivity, returnedList)
@@ -108,7 +68,6 @@ class AskActivity : AppCompatActivity() {
 
                     when (action) {
                         "answer" -> {
-
                             if (categoryList.contains(position+1)) {
 
                                 view.background = null
@@ -124,12 +83,10 @@ class AskActivity : AppCompatActivity() {
 
                             }
 
-
                             Toast.makeText(this@AskActivity, "categoryList: $categoryList", Toast.LENGTH_LONG).show()
-
                         }
-                        "ask" -> {
 
+                        "ask" -> {
                             if (currentCard == null) {
 
                                 currentCard = view
@@ -150,8 +107,6 @@ class AskActivity : AppCompatActivity() {
                         }
                     }
 
-
-
                 }
 
             }
@@ -159,10 +114,73 @@ class AskActivity : AppCompatActivity() {
             override fun onFailure(call: Call<List<QuestionCategory>>?, t: Throwable?) {
                 Log.e(AskActivity::class.simpleName, t.toString())
             }
+
         })
 
     }
 
+    private fun startQueueStudent() {
 
+        val conn = Connect(getString(R.string.url))
+                .connectionCategory
+                .sendStudentCategory(this@AskActivity
+                        .getSharedPreferences(getString(R.string.login_preference_key), Context.MODE_PRIVATE)
+                        .getInt("userId", 0)
+                        , currentId
+                        , 0)
+
+        conn.enqueue(object: Callback<Boolean> {
+            override fun onResponse(call: Call<Boolean>?, response: Response<Boolean>?) {
+                val returnedObject = response?.body()
+                Log.i(AskActivity::class.simpleName, "This was returned: ${returnedObject.toString()}")
+
+                if(returnedObject == true) {
+                    val nextActivity = Intent(this@AskActivity, WaitingActivity::class.java)
+                    nextActivity.putExtra("action", "ask")
+                    startActivity(nextActivity)
+                    finish()
+                } else {
+                    toast("Something went wrong! Try again!")
+                }
+
+            }
+
+            override fun onFailure(call: Call<Boolean>?, t: Throwable?) {
+                Log.e(AskActivity::class.simpleName, "Error: ${t.toString()}")
+            }
+        })
+    }
+
+    private fun startQueueTutor() {
+
+        val conn = Connect(getString(R.string.url))
+                .connectionCategory
+                .sendTutorCategory(this@AskActivity
+                        .getSharedPreferences(getString(R.string.login_preference_key), Context.MODE_PRIVATE)
+                        .getInt("userId", 0)
+                        , categoryList.toIntArray()
+                        , 0)
+
+        conn.enqueue(object: Callback<Boolean> {
+            override fun onResponse(call: Call<Boolean>?, response: Response<Boolean>?) {
+                val returnedObject = response?.body()
+
+                if(returnedObject == true) {
+                    val nextActivity = Intent(this@AskActivity, WaitingActivity::class.java)
+                    nextActivity.putExtra("action", "answer")
+                    startActivity(nextActivity)
+                    finish()
+                } else {
+                    toast("Something went wrong! Try again!")
+                }
+
+            }
+
+            override fun onFailure(call: Call<Boolean>?, t: Throwable?) {
+                Log.e(AskActivity::class.simpleName, "Error: ${t.toString()}")
+            }
+        })
+
+    }
 
 }

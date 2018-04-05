@@ -66,7 +66,6 @@ class LoginActivity : AppCompatActivity() {
             logoutGoogle.visibility = View.VISIBLE
             loginGoogle.isEnabled = false
 
-//            startActivity(Intent(this,SelectActionActivity::class.java))
         } else {
 
             Log.i(this@LoginActivity::class.simpleName, "Not logged in")
@@ -76,6 +75,13 @@ class LoginActivity : AppCompatActivity() {
         // for Facebook
 
         if(AccessToken.getCurrentAccessToken() != null) {
+
+            Log.d(LoginActivity::class.simpleName, "It was ${this@LoginActivity
+                    .getSharedPreferences(getString(R.string.login_preference_key), Context.MODE_PRIVATE)
+                    .getInt("userId", 0)}")
+
+            startActivity(Intent(this@LoginActivity, HomeActivity::class.java))
+            finish()
 
         }
 
@@ -119,9 +125,6 @@ class LoginActivity : AppCompatActivity() {
             signOutGoogle()
         }
 
-        bypassButton.setOnClickListener {
-            startActivity(Intent(this, SelectActionActivity::class.java))
-        }
     }
 
     private fun signInGoogle() {
@@ -141,8 +144,6 @@ class LoginActivity : AppCompatActivity() {
                 sendGoogleToken(account.idToken!!)
 
             }
-
-            //startActivity(Intent(this, SelectActionActivity::class.java))
 
         } catch (e: ApiException) {
 
@@ -226,6 +227,7 @@ class LoginActivity : AppCompatActivity() {
 
                 val accessToken = result?.accessToken?.token!!
                 Log.d(LoginActivity::class.simpleName, " the token is: $accessToken")
+
                 sendFacebookToken(accessToken)
 
             }
@@ -252,21 +254,23 @@ class LoginActivity : AppCompatActivity() {
                 .connectionFacebook
                 .loginFacebook(accessToken)
 
-        connection.enqueue(object : Callback<Int> {
+        connection.enqueue(object : Callback<Long> {
 
-            override fun onResponse(call: Call<Int>?, response: Response<Int>) {
-                val respo = response.body().toString()
-                Log.d(LoginActivity::class.simpleName, "It was $respo")
+            override fun onResponse(call: Call<Long>?, response: Response<Long>) {
+                val respo = response.body()!!
 
-                setLoginPreference(respo.toInt(), "facebook")
+                setLoginPreference(respo, "facebook")
 
                 Log.d(LoginActivity::class.simpleName, "It was ${this@LoginActivity
                         .getSharedPreferences(getString(R.string.login_preference_key), Context.MODE_PRIVATE)
-                        .getInt("userId", 0)}")
+                        .getLong("userId", 0)}")
+
+                startActivity(Intent(this@LoginActivity, HomeActivity::class.java))
+                finish()
 
             }
 
-            override fun onFailure(call: Call<Int>?, t: Throwable?) {
+            override fun onFailure(call: Call<Long>?, t: Throwable?) {
                 Log.e(LoginActivity::class.simpleName, "It was an error ${t.toString()}")
                 if (t?.message == "unexpected end of stream"){sendFacebookToken(accessToken)}
             }
@@ -275,12 +279,12 @@ class LoginActivity : AppCompatActivity() {
 
     }
 
-    fun setLoginPreference(userId: Int, method: String) {
+    fun setLoginPreference(userId: Long, method: String) {
 
         // Shared Preference
         val loginPreference = this@LoginActivity.getSharedPreferences(getString(R.string.login_preference_key), Context.MODE_PRIVATE)
         with (loginPreference.edit()) {
-            putInt("userId", userId)
+            putLong("userId", userId)
             apply()
         }
 

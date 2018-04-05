@@ -47,6 +47,7 @@ class ChatActivity : AppCompatActivity(), Session.SessionListener, Session.Signa
 
             override fun onFailure(call: Call<Opentok>?, t: Throwable?) {
                 Log.e(logTag, "Retrofit Error: ${t.toString()}")
+
             }
         })
 

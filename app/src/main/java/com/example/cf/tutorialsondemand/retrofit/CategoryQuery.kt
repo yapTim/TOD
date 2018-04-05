@@ -21,4 +21,10 @@ interface CategoryQuery {
     fun sendTutorCategory(@Field("user") userId: Int,
                           @Field("category") categoryList: IntArray,
                           @Field("status") isAvailable: Int): Call<Boolean>
+
+    @FormUrlEncoded
+    @POST("/student/")
+    fun sendStudentCategory(@Field("user") userId: Int,
+                          @Field("category") categoryList: Int,
+                          @Field("status") isAvailable: Int): Call<Boolean>
 }
