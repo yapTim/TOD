@@ -2,21 +2,32 @@ package com.example.cf.tutorialsondemand.activities
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.design.R.id.wrap_content
+import android.support.v4.content.ContextCompat.startActivity
 import android.support.v4.content.res.ResourcesCompat
+import android.support.v7.widget.CardView
 import android.util.Log
+import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.GridView
-import android.widget.Toast
+import android.widget.*
 import com.example.cf.tutorialsondemand.R
+import com.example.cf.tutorialsondemand.R.string.categoryCount
 import com.example.cf.tutorialsondemand.adapter.CardAdapter
 import com.example.cf.tutorialsondemand.models.QuestionCategory
+import com.example.cf.tutorialsondemand.models.RequestPoolObject
+import com.example.cf.tutorialsondemand.models.Student
 import com.example.cf.tutorialsondemand.retrofit.Connect
+import com.google.gson.Gson
+import org.jetbrains.anko.internals.AnkoInternals.addView
 import org.jetbrains.anko.toast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.math.ceil
 
 
 class AskActivity : AppCompatActivity() {
@@ -29,7 +40,6 @@ class AskActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ask)
-
         val action = intent.getStringExtra("action")
 
         toolbar = findViewById(R.id.categoryToolbar)
@@ -41,81 +51,54 @@ class AskActivity : AppCompatActivity() {
         }
 
         toolbar.setOnMenuItemClickListener {
-            when (it.itemId) {
-                R.id.selectCategoryButton -> {
-                    when (action) {
-                        "answer" -> startQueueTutor()
-                        "ask" -> startQueueStudent()
+
+            if (!categoryList.isEmpty() || action == "ask") {
+
+                if ((action == "ask" && currentId != 0) || action == "answer") {
+
+                    when (it.itemId) {
+                        R.id.selectCategoryButton -> {
+                            when (action) {
+                                "answer" -> startQueueTutor()
+                                "ask" -> startQueueStudent()
+                            }
+                        }
                     }
+
+                } else {
+
+                    toast("No category selected")
+
                 }
+
+            } else {
+
+                toast("No categories selected!")
             }
+
             true
         }
 
-        val categoryGrid: GridView = findViewById(R.id.categoryView)
+        val categorySet = this.getSharedPreferences(
+                getString(R.string.category_preference_key),
+                Context.MODE_PRIVATE
+        ).getStringSet("categoryList", null)
 
-        val conn = Connect(getString(R.string.url))
-                .connectionCategory
-                .getCategory()
+        val categoryListCount = categorySet.size
 
-        conn.enqueue(object: Callback<List<QuestionCategory>> {
+        val rowCount =  ceil(categoryListCount / 2.0).toInt()
 
-            override fun onResponse(call: Call<List<QuestionCategory>>, response: Response<List<QuestionCategory>>) {
-                val returnedList = response.body()!!
-                categoryGrid.adapter = CardAdapter(this@AskActivity, returnedList)
+        val inflater = this.layoutInflater
 
-                categoryGrid.setOnItemClickListener { _, view, position, _ ->
+        val table: LinearLayout = findViewById(R.id.categoryTable)
 
-                    when (action) {
-                        "answer" -> {
-                            if (categoryList.contains(position+1)) {
+        for (i in 0 until rowCount) {
+            val tableRow = inflater.inflate(R.layout.category_table_row, table,  false) as LinearLayout
 
-                                view.background = null
-                                view.background = ResourcesCompat.getDrawable(resources, R.drawable.category_unselected_border, null)
-                                categoryList.remove(position + 1)
-                                toolbar.menu.findItem(R.id.selectCategoryCount).title = getString(R.string.categoryCount, --categoryCounter)
+            createCategoryCardRow(inflater, tableRow, categorySet, i, rowCount, action, categoryListCount)
+            table.addView(tableRow)
 
-                            } else {
-
-                                view.background = ResourcesCompat.getDrawable(resources, R.drawable.category_selected_border, null)
-                                toolbar.menu.findItem(R.id.selectCategoryCount).title = getString(R.string.categoryCount, ++categoryCounter)
-                                categoryList.add(position + 1)
-
-                            }
-
-                            Toast.makeText(this@AskActivity, "categoryList: $categoryList", Toast.LENGTH_LONG).show()
-                        }
-
-                        "ask" -> {
-                            if (currentCard == null) {
-
-                                currentCard = view
-
-                            } else {
-
-                                val ex = currentCard
-                                ex?.background = null
-                                ex?.background = ResourcesCompat.getDrawable(resources, R.drawable.category_unselected_border, null)
-                                currentCard = view
-
-                            }
-
-                            currentId = position + 1
-
-                            Toast.makeText(this@AskActivity, "position: $currentId", Toast.LENGTH_LONG).show()
-                            view.background = ResourcesCompat.getDrawable(resources, R.drawable.category_selected_border, null)
-                        }
-                    }
-
-                }
-
-            }
-
-            override fun onFailure(call: Call<List<QuestionCategory>>?, t: Throwable?) {
-                Log.e(AskActivity::class.simpleName, t.toString())
-            }
-
-        })
+        }
 
     }
 
@@ -125,28 +108,29 @@ class AskActivity : AppCompatActivity() {
                 .connectionCategory
                 .sendStudentCategory(this@AskActivity
                         .getSharedPreferences(getString(R.string.login_preference_key), Context.MODE_PRIVATE)
-                        .getInt("userId", 0)
-                        , currentId
-                        , 0)
+                        .getLong("userId", 0)
+                        , currentId)
 
-        conn.enqueue(object: Callback<Boolean> {
-            override fun onResponse(call: Call<Boolean>?, response: Response<Boolean>?) {
+        conn.enqueue(object: Callback<RequestPoolObject> {
+            override fun onResponse(call: Call<RequestPoolObject>?, response: Response<RequestPoolObject>?) {
                 val returnedObject = response?.body()
                 Log.i(AskActivity::class.simpleName, "This was returned: ${returnedObject.toString()}")
 
-                if(returnedObject == true) {
+                if(returnedObject != null) {
+
                     val nextActivity = Intent(this@AskActivity, WaitingActivity::class.java)
                     nextActivity.putExtra("action", "ask")
+                    nextActivity.putExtra("poolId", returnedObject.poolId)
                     startActivity(nextActivity)
                     finish()
-                } else {
-                    toast("Something went wrong! Try again!")
+
                 }
 
             }
 
-            override fun onFailure(call: Call<Boolean>?, t: Throwable?) {
+            override fun onFailure(call: Call<RequestPoolObject>?, t: Throwable?) {
                 Log.e(AskActivity::class.simpleName, "Error: ${t.toString()}")
+                if (t?.message == "unexpected end of stream"){startQueueStudent()}
             }
         })
     }
@@ -155,32 +139,115 @@ class AskActivity : AppCompatActivity() {
 
         val conn = Connect(getString(R.string.url))
                 .connectionCategory
-                .sendTutorCategory(this@AskActivity
-                        .getSharedPreferences(getString(R.string.login_preference_key), Context.MODE_PRIVATE)
-                        .getInt("userId", 0)
-                        , categoryList.toIntArray()
-                        , 0)
+                .sendTutorCategory(categoryList.toIntArray())
 
-        conn.enqueue(object: Callback<Boolean> {
-            override fun onResponse(call: Call<Boolean>?, response: Response<Boolean>?) {
-                val returnedObject = response?.body()
+        conn.enqueue(object: Callback<Student> {
 
-                if(returnedObject == true) {
-                    val nextActivity = Intent(this@AskActivity, WaitingActivity::class.java)
-                    nextActivity.putExtra("action", "answer")
-                    startActivity(nextActivity)
-                    finish()
-                } else {
-                    toast("Something went wrong! Try again!")
-                }
+            override fun onResponse(call: Call<Student>?, response: Response<Student>?) {
+
+                val nextActivity = Intent(this@AskActivity, WaitingActivity::class.java)
+                nextActivity.putExtra("action", "answer")
+                nextActivity.putExtra("categories", categoryList.toIntArray())
+
+                startActivity(nextActivity)
+                finish()
 
             }
 
-            override fun onFailure(call: Call<Boolean>?, t: Throwable?) {
-                Log.e(AskActivity::class.simpleName, "Error: ${t.toString()}")
+            override fun onFailure(call: Call<Student>?, t: Throwable?) {
+                Log.e(AskActivity::class.simpleName, "Error startQueueTutor: $t")
+                if (t?.message == "unexpected end of stream"){startQueueTutor()}
             }
         })
 
+    }
+
+    private fun createCategoryCardRow(inflater: LayoutInflater, tableRow: LinearLayout, categorySet: MutableSet<String>, i: Int, rowCount: Int, action: String, categoryListCount: Int) {
+        var categoryCard = inflater.inflate(R.layout.category_card, tableRow, false) as CardView
+        var categoryHeader = TextView(this)
+        var category = Gson().fromJson(categorySet.elementAt(i*2), QuestionCategory::class.java)
+
+        categoryHeader.width = wrap_content
+        categoryHeader.height = wrap_content
+        categoryHeader.text = category.categoryLabel
+        categoryHeader.gravity = Gravity.CENTER
+
+        categoryCard.background = ResourcesCompat.getDrawable(resources, R.drawable.category_unselected_border, null)
+        categoryCard.addView(categoryHeader)
+        categoryCard.tag = category.categoryId
+
+        setCardViewListener(categoryCard, categoryCard.tag.toString().toInt(), action)
+
+        tableRow.addView(categoryCard)
+
+        categoryCard = inflater.inflate(R.layout.category_card, tableRow, false) as CardView
+
+        if (categoryListCount % 2 != 1 || i < rowCount-1) {
+            categoryHeader = TextView(this)
+            category = Gson().fromJson(categorySet.elementAt(i*2+1), QuestionCategory::class.java)
+
+            categoryHeader.width = wrap_content
+            categoryHeader.height = wrap_content
+            categoryHeader.text = category.categoryLabel
+            categoryHeader.gravity = Gravity.CENTER
+
+            categoryCard.background = ResourcesCompat.getDrawable(resources, R.drawable.category_unselected_border, null)
+            categoryCard.addView(categoryHeader)
+            categoryCard.tag = category.categoryId
+
+            setCardViewListener(categoryCard, categoryCard.tag.toString().toInt(), action)
+
+        } else {
+
+            categoryCard.visibility = View.INVISIBLE
+
+        }
+
+        tableRow.addView(categoryCard)
+    }
+
+    private fun setCardViewListener(categoryCard: CardView, id: Int, action: String) {
+        categoryCard.setOnClickListener {
+            when (action) {
+                "answer" -> {
+                    if (categoryList.contains(id)) {
+
+                        categoryCard.background = null
+                        categoryCard.background = ResourcesCompat.getDrawable(resources, R.drawable.category_unselected_border, null)
+                        categoryList.remove(id)
+                        toolbar.menu.findItem(R.id.selectCategoryCount).title = getString(R.string.categoryCount, --categoryCounter)
+
+                    } else {
+
+                        categoryCard.background = ResourcesCompat.getDrawable(resources, R.drawable.category_selected_border, null)
+                        toolbar.menu.findItem(R.id.selectCategoryCount).title = getString(R.string.categoryCount, ++categoryCounter)
+                        categoryList.add(id)
+
+                    }
+
+                }
+
+                "ask" -> {
+                    if (currentCard == null) {
+
+                        currentCard = categoryCard
+
+                    } else {
+
+                        val ex = currentCard
+                        ex?.background = null
+                        ex?.background = ResourcesCompat.getDrawable(resources, R.drawable.category_unselected_border, null)
+                        currentCard = categoryCard
+
+                    }
+
+                    currentId = id
+
+                    categoryCard.background = ResourcesCompat.getDrawable(resources, R.drawable.category_selected_border, null)
+                }
+            }
+
+        }
     }
 
 }

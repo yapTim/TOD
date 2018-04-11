@@ -1,6 +1,7 @@
 <resources>
     <!-- Preference Keys -->
     <string name="login_preference_key">LOGIN_INFO</string>
+    <string name="category_preference_key">CATEGORY_INFO</string>
 
     <string name="placeholder">Sample Text</string>
     <string name="app_name">TutorialsOnDemand</string>
@@ -41,6 +42,9 @@
     <string name="askText">Ask a Question</string>
     <string name="answerText">Answer a Question</string>
 
+    <!-- For LivestreamActivty -->
+    <string name="waitingForVideo">Waiting for video&#8230;</string>
+
     <!-- For AskActivity -->
     <string name="askHeader">Select Category</string>
 
@@ -53,12 +57,28 @@
     <!-- For all Alert Dialogs -->
     <string name="logOutAlertTitle">LOG OUT</string>
     <string name="logOutAlertMessage">Are you sure you want to log out?</string>
-    <string name="exitAppAlertTitle">EXIT TUTORIALS ON DEMAND</string>
+    <string name="exitAppAlertTitle">EXIT TUTORIAL ON DEMAND</string>
     <string name="exitAppAlertMessage">Are you sure you want to exit?</string>
     <string name="cancelFindAlertMessage">Are you sure you want to stop?</string>
     <string name="cancelFindAlertTitle">Stop</string>
+    <string name="acceptFailedAlertMessage">You failed to accept in time. Please try again!</string>
+    <string name="acceptFailedAlertTitle">Failed To Accept</string>
+    <string name="findFailedAlertMessage">It took too long to find your %1$s!</string>
+    <string name="findFailedAlertTitle">Failed to Find</string>
+    <string name="declinedAlertMessage">Your %1$s backed out of your request</string>
+    <string name="declinedAlertTitle">Match Declined</string>
+    <string name="notConnectedAlertMessage">Can\'t connect to the server!\nPlease check your connection</string>
+    <string name="notConnectedAlertTitle">Error Connecting to Server</string>
 
     <!-- Waiting activity -->
     <string name="waitingMessage">Searching for a %1$s</string>
+    <string name="foundMessage">Found Your %1$s!</string>
+    <string name="acceptButtonHeader">Accept</string>
+    <string name="declineButtonHeader">Decline</string>
+    <string name="timerTextHeader">Time Elapsed</string>
+    <string name="timeElapsed">%1$d:%2$d%3$d</string>
+    <string name="matchName">%1$s %2$s</string>
+    <string name="waitingForStudent">Waiting for student to accept &#8230;</string>
+
 
 </resources>

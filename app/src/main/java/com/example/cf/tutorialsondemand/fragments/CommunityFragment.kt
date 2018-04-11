@@ -4,9 +4,13 @@ import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.FrameLayout
+import android.widget.RatingBar
 
 import com.example.cf.tutorialsondemand.R
 
@@ -30,7 +34,17 @@ class CommunityFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_community, container, false)
+        val view = inflater.inflate(R.layout.fragment_community, container, false)
+
+        val mainView = view.findViewById<FrameLayout>(R.id.mainView)
+
+        view.findViewById<Button>(R.id.buttonToInfalte).setOnClickListener {
+
+            layoutInflater.inflate(R.layout.activity_livestream, mainView, true)
+
+        }
+
+        return view
     }
 
     companion object {

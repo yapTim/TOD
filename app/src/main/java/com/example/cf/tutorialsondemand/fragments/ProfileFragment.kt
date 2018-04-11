@@ -10,11 +10,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.TextView
 import com.example.cf.tutorialsondemand.R
 import com.example.cf.tutorialsondemand.activities.ChatActivity
 import com.example.cf.tutorialsondemand.activities.LivestreamActivity
 import com.example.cf.tutorialsondemand.activities.LoginActivity
+import com.example.cf.tutorialsondemand.activities.WaitingActivity
 import com.facebook.login.LoginManager
 
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -39,22 +39,10 @@ class ProfileFragment : Fragment() {
         // Inflate the layout for this fragment
         val view: View = inflater.inflate(R.layout.fragment_profile, container, false)
         val logoutBtn = view.findViewById<Button>(R.id.logoutButton)
-        val chatBtn = view.findViewById<Button>(R.id.chatButton)
-        val livestreamBtn = view.findViewById<Button>(R.id.livestreamButton)
 
         logoutBtn.setOnClickListener {
             signOutFacebook()
         }
-
-        chatBtn.setOnClickListener {
-            startActivity(Intent(this.activity, ChatActivity::class.java))
-        }
-
-        livestreamBtn.setOnClickListener {
-            startActivity(Intent(this.activity, LivestreamActivity::class.java))
-        }
-
-
 
 
 

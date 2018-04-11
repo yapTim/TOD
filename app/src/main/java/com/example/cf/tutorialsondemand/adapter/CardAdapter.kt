@@ -24,16 +24,14 @@ class CardAdapter(val context: Context, private val questionCategoryList: List<Q
     override fun getItemId(position: Int): Long = position.toLong()
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-        var view = convertView
+        var view = convertView!!
 
         if (view == null) {
             view = LayoutInflater.from(context).inflate(R.layout.category_card, parent, false)
         }
 
         val category: QuestionCategory = this.getItem(position)
-        val newTextView: TextView = view?.findViewById(R.id.categoryHeader)!!
 
-        newTextView.text = category.categoryLabel
 
         return view
     }
