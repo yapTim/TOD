@@ -8,5 +8,6 @@ data class Student(
         @SerializedName("id") val poolId: Long,
         @SerializedName("user") val studentId: Long,
         val status: Int,
-        @SerializedName("category") val categoryId: Int
+        @SerializedName("category") val categoryId: Int,
+        @SerializedName("avatar") val profilePicture: String
 )

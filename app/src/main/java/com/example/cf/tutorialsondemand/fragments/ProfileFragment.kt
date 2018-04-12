@@ -8,6 +8,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat.startActivity
 import android.support.v4.content.res.ResourcesCompat
 import android.util.Log
 import android.view.LayoutInflater
@@ -17,15 +18,24 @@ import android.widget.Button
 import android.widget.RatingBar
 import android.widget.TextView
 import com.example.cf.tutorialsondemand.R
+import com.example.cf.tutorialsondemand.activities.HomeActivity
 import com.example.cf.tutorialsondemand.activities.LoginActivity
 import com.example.cf.tutorialsondemand.models.User
+import com.example.cf.tutorialsondemand.retrofit.Connect
 import com.facebook.login.LoginManager
 import com.google.gson.Gson
 import com.mikhaellopez.circularimageview.CircularImageView
 import com.squareup.picasso.Picasso
 import java.io.InputStream
 import okhttp3.*
+import org.jetbrains.anko.find
+import org.jetbrains.anko.toast
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.IOException
+import java.math.BigDecimal
+import java.nio.file.Files.find
 
 
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -55,12 +65,46 @@ class ProfileFragment : Fragment() {
                 ?.getSharedPreferences(getString(R.string.login_preference_key), Context.MODE_PRIVATE)
                 ?.getString("profile", ""), User::class.java)
 
-        val rating = if (profile.rating == 0.0) "None" else profile.rating.toString()
+        val conn = Connect(getString(R.string.url))
+                .connectionProfile
+                .getNewRating(profile.userId)
+
+        var rating = if (profile.rating == 0.0) "None" else profile.rating.toString()
+
+        conn.enqueue(object: Callback<Double> {
+
+            override fun onResponse(call: Call<Double>?, response: Response<Double>?) {
+                if(response?.body()!! != profile.rating) {
+
+                    profile.rating = response.body()!!
+                    setLoginPreference(profile)
+                    rating = response.body()!!.toString()
+
+                }
+
+                view.findViewById<TextView>(R.id.profileRatingValue).text = rating
+
+                if (rating !== "None") {
+
+                    view.findViewById<RatingBar>(R.id.profileRatingStars).rating = rating.toDouble().roundTo2DecimalPlaces().toFloat()
+
+                } else {
+
+                    view.findViewById<RatingBar>(R.id.profileRatingStars).rating = 0f
+
+                }
+
+            }
+
+            override fun onFailure(call: Call<Double>?, t: Throwable?) {
+
+                Log.e(HomeActivity::class.simpleName, "getNewRating Error: $t")
+            }
+
+        })
 
         view.findViewById<TextView>(R.id.profileNameText).text = getString(R.string.profileName, profile.firstName, profile.lastName)
         view.findViewById<TextView>(R.id.profileEmailText).text = getString(R.string.profileEmail, profile.email)
-        view.findViewById<TextView>(R.id.profileRatingValue).text = rating
-        view.findViewById<RatingBar>(R.id.profileRatingStars).rating = profile.rating.toFloat()
         Picasso.get().load(profile.profilePicture).into(view.findViewById<CircularImageView>(R.id.profilePicture))
 
         logoutBtn.setOnClickListener {
@@ -106,6 +150,22 @@ class ProfileFragment : Fragment() {
                 .show()
 
     }
+
+    fun setLoginPreference(user: User) {
+        Log.i(HomeActivity::class.simpleName, "This is cool: $user")
+        // Shared Preference
+
+        val loginPreference = activity!!.getSharedPreferences(getString(R.string.login_preference_key), Context.MODE_PRIVATE)
+        with (loginPreference.edit()) {
+            putLong("userId", user.userId)
+            putString("profile", com.google.gson.Gson().toJson(user))
+            apply()
+        }
+
+    }
+
+    fun Double.roundTo2DecimalPlaces() =
+            BigDecimal(this).setScale(2, BigDecimal.ROUND_HALF_UP).toDouble()
 
     companion object {
 

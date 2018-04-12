@@ -8,178 +8,340 @@
     android:orientation="vertical"
     android:id="@+id/livestreamContainer">
 
-    <!-- The primary full-screen view. This can be replaced with whatever view
-         is needed to present your content, e.g. VideoView, SurfaceView,
-         TextureView, etc. -->
-    <FrameLayout
-        android:id="@+id/videoFrameContainer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <FrameLayout
-            android:id="@+id/videoContainer"
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <FrameLayout
-                android:id="@+id/pubsView"
-                android:layout_width="@dimen/pubs_screen_width"
-                android:layout_height="@dimen/pubs_screen_height"
-                android:layout_gravity="top|end"
-                android:layout_marginEnd="16dp"
-                android:layout_marginTop="16dp"
-                android:background="#FFFFFF"
-                android:padding="2dp" />
-
-            <FrameLayout
-                android:id="@+id/subsView"
+                android:id="@+id/videoContainer"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-                <LinearLayout
-                    android:id="@+id/loadingView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:orientation="vertical">
+                <FrameLayout
+                    android:id="@+id/subsView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-                    <ProgressBar
-                        android:id="@+id/loadingForSubs"
-                        style="?android:attr/progressBarStyle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
-                        android:id="@+id/waitText"
+                    <LinearLayout
+                        android:id="@+id/loadingView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/waitingForVideo"
-                        android:textColor="#FFFFFF" />
+                        android:layout_gravity="center"
+                        android:orientation="vertical">
 
-                </LinearLayout>
+                        <ProgressBar
+                            android:id="@+id/loadingForSubs"
+                            style="?android:attr/progressBarStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                        <TextView
+                            android:id="@+id/waitText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/waitingForVideo"
+                            android:textColor="#FFFFFF" />
+
+                    </LinearLayout>
+
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/pubsView"
+                    android:layout_width="@dimen/pubs_screen_width"
+                    android:layout_height="@dimen/pubs_screen_height"
+                    android:layout_gravity="top|end"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginTop="16dp"
+                    android:background="#FFFFFF"
+                    android:elevation="4dp"
+                    android:padding="2dp" />
 
             </FrameLayout>
 
-        </FrameLayout>
 
-
-        <!-- This FrameLayout insets its children based on system windows using
-             android:fitsSystemWindows. -->
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="true">
-
-            <android.support.constraint.ConstraintLayout
+            <!-- This FrameLayout insets its children based on system windows using
+                 android:fitsSystemWindows. -->
+            <FrameLayout
+                android:id="@+id/livestreamButtonBar"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:animateLayoutChanges="true"
+                android:fitsSystemWindows="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-                <LinearLayout
-                    android:id="@+id/fullscreen_content_controls"
-                    style="?metaButtonBarStyle"
+                <android.support.constraint.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:background="@color/black_overlay"
-                    android:orientation="horizontal"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/actionsToolbarGuideline"
-                    tools:ignore="UselessParent">
+                    android:layout_height="match_parent">
 
-                    <android.support.constraint.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                    <LinearLayout
+                        android:id="@+id/fullscreen_content_controls"
+                        style="?metaButtonBarStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_gravity="bottom"
+                        android:background="#000000"
+                        android:orientation="horizontal"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/actionsToolbarGuideline"
+                        tools:ignore="UselessParent">
 
-                        <android.support.design.widget.FloatingActionButton
-                            android:id="@+id/dropCallButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="0dp"
-                            android:layout_marginBottom="8dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_weight="1"
-                            android:clickable="true"
-                            android:focusable="true"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.024"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintVertical_bias="0.0"
-                            app:srcCompat="@drawable/icon_drop_call" />
+                        <android.support.constraint.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
 
-                        <android.support.design.widget.FloatingActionButton
-                            android:id="@+id/switchCameraButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="0dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_weight="1"
-                            android:clickable="true"
-                            android:focusable="true"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.25"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:srcCompat="@drawable/icon_switch_cam" />
+                            <android.support.design.widget.FloatingActionButton
+                                android:id="@+id/dropCallButton"
+                                android:layout_width="45dp"
+                                android:layout_height="45dp"
+                                android:layout_marginBottom="8dp"
+                                android:layout_marginEnd="8dp"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginTop="8dp"
+                                android:layout_weight="1"
+                                android:clickable="true"
+                                android:elevation="2dp"
+                                android:focusable="true"
+                                android:scaleType="center"
+                                android:src="@drawable/icon_drop_call"
+                                app:backgroundTint="@color/colorError"
+                                app:fabSize="auto"
+                                app:layout_constraintBottom_toTopOf="@+id/buttonBottomGuideline"
+                                app:layout_constraintEnd_toStartOf="@+id/dropCallButtonRightGuideline"
+                                app:layout_constraintStart_toStartOf="@+id/dropCallButtonLeftGuideline"
+                                app:layout_constraintTop_toTopOf="@+id/buttonTopGuideline" />
 
-                        <android.support.design.widget.FloatingActionButton
-                            android:id="@+id/muteMicButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="0dp"
-                            android:layout_marginBottom="8dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_weight="1"
-                            android:clickable="true"
-                            android:focusable="true"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.6"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintVertical_bias="0.0"
-                            app:srcCompat="@drawable/icon_mic_on" />
+                            <android.support.design.widget.FloatingActionButton
+                                android:id="@+id/switchCameraButton"
+                                android:layout_width="45dp"
+                                android:layout_height="45dp"
+                                android:layout_marginBottom="8dp"
+                                android:layout_marginEnd="8dp"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginTop="8dp"
+                                android:layout_weight="1"
+                                android:clickable="true"
+                                android:elevation="2dp"
+                                android:focusable="true"
+                                android:scaleType="center"
+                                android:src="@drawable/icon_switch_camera"
+                                app:backgroundTint="@color/colorButton"
+                                app:fabSize="auto"
+                                app:layout_constraintBottom_toTopOf="@+id/buttonBottomGuideline"
+                                app:layout_constraintEnd_toStartOf="@+id/switchCameraButtonRightGuideline"
+                                app:layout_constraintStart_toStartOf="@+id/switchCameraButtonLeftGuideline"
+                                app:layout_constraintTop_toTopOf="@+id/buttonTopGuideline" />
 
-                        <android.support.design.widget.FloatingActionButton
-                            android:id="@+id/toggleVideoButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="8dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_weight="1"
-                            android:clickable="true"
-                            android:focusable="true"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.80"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintVertical_bias="0.0"
-                            app:srcCompat="@drawable/icon_video_on" />
+                            <android.support.design.widget.FloatingActionButton
+                                android:id="@+id/chatButton"
+                                android:layout_width="56dp"
+                                android:layout_height="56dp"
+                                android:layout_marginBottom="8dp"
+                                android:layout_marginEnd="8dp"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginTop="8dp"
+                                android:clickable="true"
+                                android:elevation="2dp"
+                                android:focusable="true"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/icon_chat"
+                                app:backgroundTint="@color/colorButton"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toStartOf="@+id/chatButtonRightGuideline"
+                                app:layout_constraintStart_toStartOf="@+id/chatButtonLeftGuideline"
+                                app:layout_constraintTop_toTopOf="parent" />
 
-                    </android.support.constraint.ConstraintLayout>
+                            <android.support.design.widget.FloatingActionButton
+                                android:id="@+id/muteMicButton"
+                                android:layout_width="45dp"
+                                android:layout_height="45dp"
+                                android:layout_marginBottom="8dp"
+                                android:layout_marginEnd="8dp"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginTop="8dp"
+                                android:layout_weight="1"
+                                android:clickable="true"
+                                android:elevation="2dp"
+                                android:focusable="true"
+                                android:scaleType="center"
+                                android:src="@drawable/icon_mic_on"
+                                app:backgroundTint="@color/colorButton"
+                                app:fabSize="auto"
+                                app:layout_constraintBottom_toTopOf="@+id/buttonBottomGuideline"
+                                app:layout_constraintEnd_toStartOf="@+id/muteMicButtonRightGuideline"
+                                app:layout_constraintStart_toStartOf="@+id/muteMicButtonLeftGuideline"
+                                app:layout_constraintTop_toTopOf="@+id/buttonTopGuideline" />
 
-                </LinearLayout>
+                            <android.support.design.widget.FloatingActionButton
+                                android:id="@+id/toggleVideoButton"
+                                android:layout_width="45dp"
+                                android:layout_height="45dp"
+                                android:layout_marginBottom="8dp"
+                                android:layout_marginEnd="8dp"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginTop="8dp"
+                                android:layout_weight="1"
+                                android:clickable="true"
+                                android:elevation="2dp"
+                                android:focusable="true"
+                                android:scaleType="center"
+                                android:src="@drawable/icon_video_on"
+                                app:backgroundTint="@color/colorButton"
+                                app:elevation="2dp"
+                                app:fabSize="auto"
+                                app:layout_constraintBottom_toTopOf="@+id/buttonBottomGuideline"
+                                app:layout_constraintEnd_toStartOf="@+id/toggleVideoButtonRightGuideline"
+                                app:layout_constraintStart_toStartOf="@+id/toggleVideoButtonLeftGuideline"
+                                app:layout_constraintTop_toTopOf="@+id/buttonTopGuideline" />
 
-                <android.support.constraint.Guideline
-                    android:id="@+id/actionsToolbarGuideline"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    app:layout_constraintGuide_percent="0.9" />
+                            <android.support.constraint.Guideline
+                                android:id="@+id/dropCallButtonLeftGuideline"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                app:layout_constraintGuide_percent="0.055" />
 
-            </android.support.constraint.ConstraintLayout>
+                            <android.support.constraint.Guideline
+                                android:id="@+id/dropCallButtonRightGuideline"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                app:layout_constraintGuide_percent="0.20" />
 
-        </FrameLayout>
+                            <android.support.constraint.Guideline
+                                android:id="@+id/switchCameraButtonLeftGuideline"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                app:layout_constraintGuide_percent="0.23" />
 
-    </FrameLayout>
+                            <android.support.constraint.Guideline
+                                android:id="@+id/switchCameraButtonRightGuideline"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                app:layout_constraintGuide_percent="0.38" />
+
+                            <android.support.constraint.Guideline
+                                android:id="@+id/chatButtonLeftGuideline"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                app:layout_constraintGuide_percent="0.41" />
+
+                            <android.support.constraint.Guideline
+                                android:id="@+id/chatButtonRightGuideline"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                app:layout_constraintGuide_percent="0.59" />
+
+                            <android.support.constraint.Guideline
+                                android:id="@+id/muteMicButtonLeftGuideline"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                app:layout_constraintGuide_percent="0.62" />
+
+                            <android.support.constraint.Guideline
+                                android:id="@+id/muteMicButtonRightGuideline"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                app:layout_constraintGuide_percent="0.77" />
+
+                            <android.support.constraint.Guideline
+                                android:id="@+id/toggleVideoButtonLeftGuideline"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                app:layout_constraintGuide_percent="0.80" />
+
+                            <android.support.constraint.Guideline
+                                android:id="@+id/toggleVideoButtonRightGuideline"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                app:layout_constraintGuide_percent="0.95" />
+
+                            <android.support.constraint.Guideline
+                                android:id="@+id/buttonTopGuideline"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                app:layout_constraintGuide_percent="0.1" />
+
+                            <android.support.constraint.Guideline
+                                android:id="@+id/buttonBottomGuideline"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                app:layout_constraintGuide_percent="0.90" />
+
+                        </android.support.constraint.ConstraintLayout>
+
+                    </LinearLayout>
+
+                    <android.support.constraint.Guideline
+                        android:id="@+id/actionsToolbarGuideline"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintGuide_percent="0.875" />
+
+                </android.support.constraint.ConstraintLayout>
+
+            </FrameLayout>
+
+
+        </android.support.constraint.ConstraintLayout>
+
+    <!--<android.support.constraint.ConstraintLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent">-->
+
+        <!--<ListView-->
+            <!--android:id="@+id/message_history_list_view"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_above="@+id/message_edit_text"-->
+            <!--android:layout_alignParentTop="true"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--android:layout_marginBottom="@dimen/dp8"-->
+            <!--android:layout_marginEnd="@dimen/dp8"-->
+            <!--android:layout_marginStart="@dimen/dp8"-->
+            <!--android:layout_marginTop="@dimen/dp8"-->
+            <!--android:transcriptMode="alwaysScroll"-->
+            <!--app:layout_constraintBottom_toTopOf="@+id/message_edit_text"-->
+            <!--app:layout_constraintEnd_toEndOf="parent"-->
+            <!--app:layout_constraintHorizontal_bias="0.0"-->
+            <!--app:layout_constraintStart_toStartOf="parent"-->
+            <!--app:layout_constraintTop_toTopOf="parent"-->
+            <!--app:layout_constraintVertical_bias="0.986" />-->
+
+        <!--<EditText-->
+            <!--android:id="@+id/message_edit_text"-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:layout_marginBottom="16dp"-->
+            <!--android:layout_marginEnd="@dimen/dp8"-->
+            <!--android:layout_marginStart="@dimen/dp8"-->
+            <!--android:enabled="false"-->
+            <!--android:hint="@string/messageHint"-->
+            <!--android:imeOptions="actionDone"-->
+            <!--android:inputType="text"-->
+            <!--android:maxLines="1" />-->
+
+    <!--</android.support.constraint.ConstraintLayout>-->
 
 </LinearLayout>

@@ -4,7 +4,7 @@
     <string name="category_preference_key">CATEGORY_INFO</string>
 
     <string name="placeholder">Sample Text</string>
-    <string name="app_name">TutorialsOnDemand</string>
+    <string name="app_name">Tutorial On Demand</string>
     <string name="startLive">Start Livestream</string>
     <string name="genText">%1$s</string>
 

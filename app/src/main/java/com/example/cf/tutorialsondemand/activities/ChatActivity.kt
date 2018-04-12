@@ -19,6 +19,7 @@ import com.opentok.android.Session
 import com.opentok.android.Stream
 import com.opentok.android.Connection
 import com.opentok.android.OpentokError
+import org.jetbrains.anko.find
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -53,7 +54,7 @@ class ChatActivity : AppCompatActivity(), Session.SessionListener, Session.Signa
 
         messageHistory = SignalAdapter(this)
         editText = findViewById(R.id.message_edit_text)
-        listText = findViewById(R.id.message_history_list_view)
+        listText = find(R.id.message_history_list_view)
 
         listText.adapter = messageHistory
 

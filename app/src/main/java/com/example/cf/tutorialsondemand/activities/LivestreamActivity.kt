@@ -3,21 +3,23 @@ package com.example.cf.tutorialsondemand.activities
 import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Path
 import android.os.Bundle
 import android.os.Handler
+import android.support.v4.content.res.ResourcesCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
-import android.widget.FrameLayout
-import android.widget.LinearLayout
-import android.widget.Toast
+import android.widget.*
 import com.example.cf.tutorialsondemand.R
+import com.example.cf.tutorialsondemand.adapter.SignalAdapter
 import com.example.cf.tutorialsondemand.models.Opentok
 import com.example.cf.tutorialsondemand.retrofit.Connect
 import com.opentok.android.*
 import com.opentok.android.Publisher.CameraListener
 import kotlinx.android.synthetic.main.activity_livestream.*
+import org.jetbrains.anko.find
 import org.jetbrains.anko.toast
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
@@ -30,6 +32,10 @@ class LivestreamActivity : AppCompatActivity(), Session.SessionListener, Publish
     private lateinit var mPublisher: Publisher
     private lateinit var mSubscriber: Subscriber
     private var logTag = MainActivity::class.simpleName
+    lateinit var editText: EditText
+    lateinit var listText: ListView
+    lateinit var messageHistory: SignalAdapter
+    val signalType = "text-signal"
 
     companion object {
 
@@ -47,6 +53,7 @@ class LivestreamActivity : AppCompatActivity(), Session.SessionListener, Publish
     private val mShowPart2Runnable = Runnable {
         fullscreen_content_controls.visibility = View.VISIBLE
     }
+
     private var mVisible: Boolean = false
     private val mHideRunnable = Runnable { hide() }
 
@@ -112,11 +119,36 @@ class LivestreamActivity : AppCompatActivity(), Session.SessionListener, Publish
         // mute mic button
         muteMicButton.setOnClickListener{
             mPublisher.publishAudio = mPublisher.publishAudio != true
+
+            if (!mPublisher.publishAudio) {
+
+                muteMicButton.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.icon_mic_off, null))
+                muteMicButton.backgroundTintList = ColorStateList.valueOf(ResourcesCompat.getColor(resources, R.color.colorChatLocal, null))
+
+            } else {
+
+                muteMicButton.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.icon_mic_on, null))
+                muteMicButton.backgroundTintList = ColorStateList.valueOf(ResourcesCompat.getColor(resources, R.color.colorButton, null))
+
+            }
+
         }
 
         // toggle video on and off
         toggleVideoButton.setOnClickListener {
             mPublisher.publishVideo = mPublisher.publishVideo != true
+
+            if (!mPublisher.publishVideo) {
+
+                toggleVideoButton.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.icon_video_off, null))
+                toggleVideoButton.backgroundTintList = ColorStateList.valueOf(ResourcesCompat.getColor(resources, R.color.colorChatLocal, null))
+
+            } else {
+
+                toggleVideoButton.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.icon_video_on, null))
+                toggleVideoButton.backgroundTintList = ColorStateList.valueOf(ResourcesCompat.getColor(resources, R.color.colorButton, null))
+
+            }
         }
 
         requestPermissions()
@@ -207,12 +239,12 @@ class LivestreamActivity : AppCompatActivity(), Session.SessionListener, Publish
     override fun onDisconnected(session: Session?) {
         Log.i(logTag, "Disconnected")
 
-        findViewById<LinearLayout>(R.id.loadingView).visibility = View.VISIBLE
     }
 
     override fun onStreamDropped(session: Session?, stream: Stream?) {
 
         Log.i(logTag, "Dropped")
+        findViewById<LinearLayout>(R.id.loadingView).visibility = View.VISIBLE
         findViewById<FrameLayout>(R.id.subsView).removeAllViews()
         dropCall()
 
@@ -257,15 +289,124 @@ class LivestreamActivity : AppCompatActivity(), Session.SessionListener, Publish
     }
 
     private fun dropCall() {
-        mSession.disconnect()
-        toast("Call Dropped")
-        startActivity(Intent(this, HomeActivity::class.java))
-        finish()
+
+        if (intent.getStringExtra("action") == "ask") {
+            val connection = Connect(getString(R.string.url))
+                    .connectionCategory
+                    .setStudentToInactive(intent.getLongExtra("poolId", 0))
+
+            connection.enqueue(object: Callback<Boolean> {
+
+                override fun onResponse(call: Call<Boolean>?, response: Response<Boolean>?) {
+                    val studentWasSet = response?.body()!!
+
+                    if (studentWasSet) {
+
+                        val newConnection = Connect(getString(R.string.url))
+                                .connectionCategory
+                                .setRoomToInactive(intent.getLongExtra("roomId", 0))
+
+                        newConnection.enqueue(object: Callback<Boolean> {
+
+                            override fun onResponse(call: Call<Boolean>?, response: Response<Boolean>?) {
+                                val roomWasSet = response?.body()!!
+
+                                if (roomWasSet) {
+
+                                    mSession.disconnect()
+                                    toast("Call Dropped")
+                                    inflateRatingActivity()
+
+                                }
+
+                            }
+
+                            override fun onFailure(call: Call<Boolean>?, t: Throwable?) {
+
+                                Log.e(AskActivity::class.simpleName, "setRoomToInactive Error: $t")
+
+                            }
+                        })
+                    }
+
+                }
+
+                override fun onFailure(call: Call<Boolean>?, t: Throwable?) {
+
+                    Log.e(AskActivity::class.simpleName, "setStudentToInactive Error: $t")
+
+                }
+            })
+
+        } else {
+
+            // to be changed when chat is up
+            mSession.disconnect()
+            mPublisher.destroy()
+            mSubscriber.destroy()
+            toast("Call Dropped")
+            startActivity(Intent(this, HomeActivity::class.java))
+            finish()
+
+        }
+
     }
 
-    fun initializeSession(apiKey: String, sessionId: String, accessToken: String) {
+    private fun inflateRatingActivity() {
+        val mainContainer = find<LinearLayout>(R.id.livestreamContainer)
+        mainContainer.removeAllViews()
+        mainContainer.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.colorWhite, null))
+
+        val view = layoutInflater.inflate(R.layout.activity_rating, mainContainer,true)
+
+        view.find<TextView>(R.id.rateTutor).setOnClickListener {
+
+            val rating = view.find<RatingBar>(R.id.tutorRatingBar).rating
+
+            val conn = Connect(getString(R.string.url))
+                    .connectionProfile
+                    .rateTutor(intent.getLongExtra("tutorId", 0), rating)
+
+            conn.enqueue(object: Callback<Boolean> {
+
+                override fun onResponse(call: Call<Boolean>?, response: Response<Boolean>?) {
+
+                    if(response?.body()!!) {
+
+                        toast("Thank you for rating!")
+                        startActivity(Intent(this@LivestreamActivity, HomeActivity::class.java))
+                        finish()
+
+                    }
+
+                }
+
+                override fun onFailure(call: Call<Boolean>?, t: Throwable?) {
+                        Log.e(LivestreamActivity::class.simpleName, "rateTutor Error: $t")
+                }
+
+            })
+
+        }
+
+        view.find<TextView>(R.id.noThanksText).setOnClickListener {
+
+            startActivity(Intent(this@LivestreamActivity, HomeActivity::class.java))
+            finish()
+
+        }
+
+    }
+
+    private fun initializeSession(apiKey: String, sessionId: String, accessToken: String) {
+
         mSession = Session.Builder(this@LivestreamActivity, apiKey, sessionId).build()
         mSession.setSessionListener(this@LivestreamActivity)
         mSession.connect(accessToken)
+
+    }
+
+    override fun onBackPressed() {
+
     }
 }

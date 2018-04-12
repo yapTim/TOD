@@ -2,12 +2,11 @@ package com.example.cf.tutorialsondemand.activities
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.R.id.wrap_content
-import android.support.v4.content.ContextCompat.startActivity
 import android.support.v4.content.res.ResourcesCompat
+import android.support.v4.view.ViewCompat
 import android.support.v7.widget.CardView
 import android.util.Log
 import android.view.Gravity
@@ -15,14 +14,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import com.example.cf.tutorialsondemand.R
-import com.example.cf.tutorialsondemand.R.string.categoryCount
-import com.example.cf.tutorialsondemand.adapter.CardAdapter
 import com.example.cf.tutorialsondemand.models.QuestionCategory
 import com.example.cf.tutorialsondemand.models.RequestPoolObject
 import com.example.cf.tutorialsondemand.models.Student
 import com.example.cf.tutorialsondemand.retrofit.Connect
 import com.google.gson.Gson
-import org.jetbrains.anko.internals.AnkoInternals.addView
 import org.jetbrains.anko.toast
 import retrofit2.Call
 import retrofit2.Callback
@@ -121,6 +117,10 @@ class AskActivity : AppCompatActivity() {
                     val nextActivity = Intent(this@AskActivity, WaitingActivity::class.java)
                     nextActivity.putExtra("action", "ask")
                     nextActivity.putExtra("poolId", returnedObject.poolId)
+
+                    nextActivity.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    nextActivity.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+
                     startActivity(nextActivity)
                     finish()
 
@@ -174,9 +174,9 @@ class AskActivity : AppCompatActivity() {
 
         categoryCard.background = ResourcesCompat.getDrawable(resources, R.drawable.category_unselected_border, null)
         categoryCard.addView(categoryHeader)
-        categoryCard.tag = category.categoryId
+        ViewCompat.setElevation(categoryCard, 3f)
 
-        setCardViewListener(categoryCard, categoryCard.tag.toString().toInt(), action)
+        setCardViewListener(categoryCard, category.categoryId, action)
 
         tableRow.addView(categoryCard)
 
@@ -193,9 +193,9 @@ class AskActivity : AppCompatActivity() {
 
             categoryCard.background = ResourcesCompat.getDrawable(resources, R.drawable.category_unselected_border, null)
             categoryCard.addView(categoryHeader)
-            categoryCard.tag = category.categoryId
+            ViewCompat.setElevation(categoryCard, 3f)
 
-            setCardViewListener(categoryCard, categoryCard.tag.toString().toInt(), action)
+            setCardViewListener(categoryCard, category.categoryId, action)
 
         } else {
 

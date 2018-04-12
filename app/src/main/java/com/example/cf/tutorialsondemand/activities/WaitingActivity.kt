@@ -22,6 +22,8 @@ import com.example.cf.tutorialsondemand.models.Student
 import com.example.cf.tutorialsondemand.models.Tutor
 import com.example.cf.tutorialsondemand.retrofit.Connect
 import com.facebook.login.LoginManager
+import com.mikhaellopez.circularimageview.CircularImageView
+import com.squareup.picasso.Picasso
 import junit.runner.Version.id
 import kotlinx.android.synthetic.main.activity_waiting.*
 import kotlinx.android.synthetic.main.customalertview_cofirmation_dialog.*
@@ -343,11 +345,13 @@ class WaitingActivity : AppCompatActivity() {
             is Student -> {
                 matchStudent = matchFound
                 view.findViewById<TextView>(R.id.matchName).text = getString(R.string.matchName, matchStudent.firstName, matchStudent.lastName)
+                Picasso.get().load(matchStudent.profilePicture).into(view.find<CircularImageView>(R.id.matchProfilePicture))
             }
 
             is Tutor -> {
                 matchTutor = matchFound
                 view.findViewById<TextView>(R.id.matchName).text = getString(R.string.matchName, matchTutor.firstName, matchTutor.lastName)
+                Picasso.get().load(matchTutor.profilePicture).into(view.find<CircularImageView>(R.id.matchProfilePicture))
             }
 
         }
@@ -367,6 +371,8 @@ class WaitingActivity : AppCompatActivity() {
 
                     val nextActivity = Intent(this@WaitingActivity, LivestreamActivity::class.java)
                     nextActivity.putExtra("roomId", matchTutor?.roomId!!)
+                    nextActivity.putExtra("poolId", intent.getLongExtra("poolId", 0))
+                    nextActivity.putExtra("tutorId", matchTutor?.tutorId!!)
                     nextActivity.putExtra("action", "ask")
 
                     handler.removeCallbacksAndMessages(null)
@@ -543,8 +549,6 @@ class WaitingActivity : AppCompatActivity() {
 
                             override fun onResponse(call: Call<Int>?, response: Response<Int>?) {
                                 val status = response?.body()!!
-
-                                toast("this is it $status")
 
                                 when(status) {
                                     0 -> {

@@ -2,9 +2,11 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorError">#b71c1c</color>
     <color name="colorAccent">#FF4081</color>
     <color name="colorWhite">#FFFFFF</color>
-    <color name="colorChatLocal">#66BB6A</color>
+    <color name="colorChatLocal">#66bb6a</color>
+    <color name="colorButton">#338a3e</color>
     <color name="colorBackground">#dcedc8</color>
     <color name="colorChatRemote">#F5F5F5</color>
     <color name="colorChatText">#000000</color>

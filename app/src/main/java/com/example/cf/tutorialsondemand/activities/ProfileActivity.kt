@@ -23,7 +23,6 @@ class ProfileActivity : AppCompatActivity() {
         setToolbar()
         setFields()
 
-
     }
 
     private fun setToolbar() {
@@ -53,7 +52,6 @@ class ProfileActivity : AppCompatActivity() {
         find<RatingBar>(R.id.profilePublicRatingStars).rating = profile.rating.toFloat()
         find<TextView>(R.id.profilePublicRatingValue).text = rating
         Picasso.get().load(profile.profilePicture).into(find<CircularImageView>(R.id.profilePublicPicture))
-
 
     }
 

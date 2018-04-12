@@ -19,6 +19,6 @@ class Connect(url: String) {
     val connection = retrofit.create(ServerQuery::class.java)
     val connectionFacebook = retrofit.create(FacebookLoginQuery::class.java)
     val connectionCategory = retrofit.create((CategoryQuery::class.java))
-    val connectionGoogle = retrofit.create(GoogleLoginQuery::class.java)
     val connectionLivestream = retrofit.create(OpentokQuery::class.java)
+    val connectionProfile = retrofit.create(ProfileQuery::class.java)
 }
