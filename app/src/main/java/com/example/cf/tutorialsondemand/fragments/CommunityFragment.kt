@@ -1,6 +1,7 @@
 package com.example.cf.tutorialsondemand.fragments
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -13,6 +14,9 @@ import android.widget.FrameLayout
 import android.widget.RatingBar
 
 import com.example.cf.tutorialsondemand.R
+import com.example.cf.tutorialsondemand.activities.LivestreamActivity
+import com.example.cf.tutorialsondemand.activities.ProfileActivity
+import org.jetbrains.anko.find
 
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
@@ -42,6 +46,10 @@ class CommunityFragment : Fragment() {
 
             layoutInflater.inflate(R.layout.activity_livestream, mainView, true)
 
+        }
+
+        view.find<Button>(R.id.checkProfileButton).setOnClickListener {
+            startActivity(Intent(context, LivestreamActivity::class.java))
         }
 
         return view

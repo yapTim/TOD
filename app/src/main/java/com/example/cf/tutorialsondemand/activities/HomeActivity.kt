@@ -23,7 +23,6 @@ class HomeActivity : AppCompatActivity() {
         setContentView(R.layout.activity_select_action)
 
         toolbar = findViewById(R.id.homeToolbar)
-        toolbar.setLogo(R.drawable.logo_beside_name)
 
         val adapter = HomeFragmentAdaptor(supportFragmentManager)
         fragmentView.adapter = adapter

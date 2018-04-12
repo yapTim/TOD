@@ -433,9 +433,9 @@ class WaitingActivity : AppCompatActivity() {
                 connection.enqueue(object: Callback<Boolean> {
 
                     override fun onResponse(call: Call<Boolean>?, response: Response<Boolean>?) {
-                        val wasSet = response?.body()!!
+                        val studentWasSet = response?.body()!!
 
-                        if (wasSet) {
+                        if (studentWasSet) {
 
                             val newConnection = Connect(getString(R.string.url))
                                     .connectionCategory
@@ -444,9 +444,9 @@ class WaitingActivity : AppCompatActivity() {
                             newConnection.enqueue(object: Callback<Boolean> {
 
                                 override fun onResponse(call: Call<Boolean>?, response: Response<Boolean>?) {
-                                    val wasSet = response?.body()!!
+                                    val roomWasSet = response?.body()!!
 
-                                    if (wasSet) {
+                                    if (roomWasSet) {
 
                                         val nextActivity = Intent(this@WaitingActivity, HomeActivity::class.java)
                                         nextActivity.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

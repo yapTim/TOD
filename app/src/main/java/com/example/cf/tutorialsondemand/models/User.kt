@@ -8,5 +8,6 @@ data class User(
         @SerializedName("last_name") val lastName: String,
         val email: String,
         @SerializedName("avatar") val profilePicture: String,
-        val rating: Double
+        val rating: Double,
+        @SerializedName("date_joined") val dateJoined: String
 )

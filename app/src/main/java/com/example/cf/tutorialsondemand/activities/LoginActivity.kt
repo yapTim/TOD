@@ -1,39 +1,25 @@
 package com.example.cf.tutorialsondemand.activities
 
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
-import android.support.constraint.ConstraintLayout
 import android.support.constraint.ConstraintSet
-import android.support.v7.app.AlertDialog
 import android.transition.AutoTransition
 import android.transition.TransitionManager
 import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.Toast
+import android.widget.ProgressBar
 import com.example.cf.tutorialsondemand.R
 import com.example.cf.tutorialsondemand.models.QuestionCategory
+import com.example.cf.tutorialsondemand.models.User
 import com.example.cf.tutorialsondemand.retrofit.Connect
 import com.facebook.*
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
-import com.facebook.login.widget.LoginButton
 import java.util.*
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.SignInButton
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.activity_login.*
 import mehdi.sakout.fancybuttons.FancyButton
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.noButton
@@ -42,7 +28,6 @@ import org.jetbrains.anko.yesButton
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-
 
 class LoginActivity : AppCompatActivity() {
     private val email: String = "email"
@@ -58,26 +43,28 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        val fbLoginButton = findViewById<FancyButton>(R.id.loginFacebook)
+        if(intent.getBooleanExtra("loggedOut", false)) {
 
-        handler.postDelayed(object: Runnable {
-            override fun run() {
-                val constraintSet = ConstraintSet()
+            val constraintSet = ConstraintSet()
 
-                constraintSet.clone(this@LoginActivity, R.layout.activity_login)
+            constraintSet.clone(this@LoginActivity, R.layout.activity_login)
+            constraintSet.setVerticalBias(R.id.logo, 0.25f)
 
-                constraintSet.setVerticalBias(R.id.logo, 0.25f)
+            constraintSet.applyTo(findViewById(R.id.loginConstraint))
 
-                val transition = AutoTransition()
-                transition.duration = 1000
+            val fbLoginButton = findViewById<FancyButton>(R.id.loginFacebook)
+            fbLoginButton.setIconResource("\uf082")
+            fbLoginButton.visibility = View.VISIBLE
 
-                TransitionManager.beginDelayedTransition(findViewById(R.id.loginConstraint), transition)
-                constraintSet.applyTo(findViewById(R.id.loginConstraint))
+        } else {
 
-                fbLoginButton.setIconResource("\uf082")
-                fbLoginButton.visibility = View.VISIBLE
-            }
-        }, 700)
+            handler.postDelayed(object: Runnable {
+                override fun run() {
+                    moveLogoUp()
+                }
+            }, 550)
+
+        }
 
         loginFacebook()
 
@@ -117,15 +104,39 @@ class LoginActivity : AppCompatActivity() {
                 , object: FacebookCallback<LoginResult> {
 
             override fun onSuccess(result: LoginResult?) {
+                val constraintSet = ConstraintSet()
 
-                val accessToken = result?.accessToken?.token!!
-                Log.d(LoginActivity::class.simpleName, " the facebook token is: $accessToken")
+                constraintSet.clone(this@LoginActivity, R.layout.activity_login)
+                constraintSet.setVerticalBias(R.id.logo, 0.45f)
 
-                sendFacebookToken(accessToken)
+                val transition = AutoTransition()
+                transition.duration = 1000
+
+                TransitionManager.beginDelayedTransition(findViewById(R.id.loginConstraint), transition)
+                constraintSet.applyTo(findViewById(R.id.loginConstraint))
+                findViewById<ProgressBar>(R.id.loadingBarLogin).visibility = View.VISIBLE
+
+                handler.postDelayed(object: Runnable {
+                    override fun run() {
+
+                        val accessToken = result?.accessToken?.token!!
+                        Log.d(LoginActivity::class.simpleName, " the facebook token is: $accessToken")
+
+                        sendFacebookToken(accessToken)
+
+                    }
+                }, 700)
+
 
             }
 
             override fun onCancel() {
+                val transition = AutoTransition()
+                transition.duration = 500
+
+                TransitionManager.beginDelayedTransition(findViewById(R.id.loginConstraint), transition)
+                fbLoginButton.visibility = View.VISIBLE
+
                 toast("Facebook Login Cancelled")
             }
 
@@ -136,7 +147,15 @@ class LoginActivity : AppCompatActivity() {
         })
 
         fbLoginButton.setOnClickListener {
+
+            val transition = AutoTransition()
+            transition.duration = 500
+
+            TransitionManager.beginDelayedTransition(findViewById(R.id.loginConstraint), transition)
+            fbLoginButton.visibility = View.GONE
+
             LoginManager.getInstance().logInWithReadPermissions(this@LoginActivity, Arrays.asList(email, profile))
+
         }
 
     }
@@ -147,9 +166,9 @@ class LoginActivity : AppCompatActivity() {
                 .connectionFacebook
                 .loginFacebook(accessToken)
 
-        connection.enqueue(object : Callback<Long> {
+        connection.enqueue(object : Callback<User> {
 
-            override fun onResponse(call: Call<Long>?, response: Response<Long>) {
+            override fun onResponse(call: Call<User>?, response: Response<User>) {
                 val respo = response.body()!!
 
                 setLoginPreference(respo)
@@ -165,20 +184,47 @@ class LoginActivity : AppCompatActivity() {
 
             }
 
-            override fun onFailure(call: Call<Long>?, t: Throwable?) {
+            override fun onFailure(call: Call<User>?, t: Throwable?) {
                 Log.e(LoginActivity::class.simpleName, "loginFacebook Error: $t")
                 if (t?.message == "unexpected end of stream"){
                     sendFacebookToken(accessToken)
                 } else {
                     LoginManager.getInstance().logOut()
+
                     alert(getString(R.string.notConnectedAlertMessage)) {
+
                         title = getString(R.string.notConnectedAlertTitle)
-                        yesButton {}
+
+                        yesButton {
+                            findViewById<ProgressBar>(R.id.loadingBarLogin).visibility = View.GONE
+                            moveLogoUp()
+                        }
+
                     }.show()
+
                 }
             }
 
         })
+
+    }
+
+    private fun moveLogoUp() {
+
+        val constraintSet = ConstraintSet()
+
+        constraintSet.clone(this@LoginActivity, R.layout.activity_login)
+        constraintSet.setVerticalBias(R.id.logo, 0.25f)
+
+        val transition = AutoTransition()
+        transition.duration = 1000
+
+        TransitionManager.beginDelayedTransition(findViewById(R.id.loginConstraint), transition)
+        constraintSet.applyTo(findViewById(R.id.loginConstraint))
+
+        val fbLoginButton = findViewById<FancyButton>(R.id.loginFacebook)
+        fbLoginButton.setIconResource("\uf082")
+        fbLoginButton.visibility = View.VISIBLE
 
     }
 
@@ -208,12 +254,13 @@ class LoginActivity : AppCompatActivity() {
         })
     }
 
-    fun setLoginPreference(userId: Long) {
-
+    fun setLoginPreference(user: User) {
+        Log.i(this@LoginActivity::class.simpleName, "This is cool: $user")
         // Shared Preference
         val loginPreference = this@LoginActivity.getSharedPreferences(getString(R.string.login_preference_key), Context.MODE_PRIVATE)
         with (loginPreference.edit()) {
-            putLong("userId", userId)
+            putLong("userId", user.userId)
+            putString("profile", Gson().toJson(user))
             apply()
         }
 

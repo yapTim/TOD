@@ -80,5 +80,10 @@
     <string name="matchName">%1$s %2$s</string>
     <string name="waitingForStudent">Waiting for student to accept &#8230;</string>
 
+    <!-- Profile Activity -->
+    <string name="profileName">%1$s %2$s</string>
+    <string name="profileEmail">%1$s</string>
+    <string name="profileDateJoined">%1$s</string>
+    <string name="profilePublicDateJoined">Joined on %1$s</string>
 
 </resources>

@@ -6,67 +6,75 @@
     android:layout_height="match_parent"
     tools:context=".activities.ProfileActivity">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/profileToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+
     <com.mikhaellopez.circularimageview.CircularImageView
-        android:id="@+id/circularImageView"
+        android:id="@+id/profilePublicPicture"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
-        android:src="@drawable/default_profile_pic"
-        app:civ_border_color="@color/colorChatLocal"
-        app:civ_border_width="5dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/logoutButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:text="Log out"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/default_profile_pic"
+        app:civ_border_color="@color/colorChatLocal"
+        app:civ_border_width="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profileToolbar"
+        app:layout_constraintVertical_bias="0.105" />
 
     <TextView
-        android:id="@+id/profileNameText"
+        android:id="@+id/profilePublicName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="12dp"
         android:text="@string/placeholder"
-        android:textSize="18sp"
+        android:textSize="22sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/circularImageView" />
+        app:layout_constraintTop_toBottomOf="@+id/profilePublicPicture" />
 
     <TextView
-        android:id="@+id/profileEmailText"
+        android:id="@+id/profilePublicDateJoined"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="0dp"
+        android:layout_marginTop="2dp"
         android:text="@string/placeholder"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileNameText" />
+        app:layout_constraintTop_toBottomOf="@+id/profilePublicName" />
 
     <TextView
-        android:id="@+id/profileDateJoined"
+        android:id="@+id/profilePublicEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:text="@string/placeholder"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileEmailText" />
+        app:layout_constraintTop_toBottomOf="@+id/profilePublicDateJoined" />
 
     <LinearLayout
         android:id="@+id/profileRating"
@@ -78,10 +86,10 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileDateJoined">
+        app:layout_constraintTop_toBottomOf="@+id/profilePublicEmail">
 
         <RatingBar
-            android:id="@+id/profileTutorRating"
+            android:id="@+id/profilePublicRatingStars"
             style="@style/Widget.AppCompat.RatingBar.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -94,41 +102,16 @@
             app:layout_constraintTop_toBottomOf="@+id/profileEmailText" />
 
         <TextView
-            android:id="@+id/profileRatingValue"
+            android:id="@+id/profilePublicRatingValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="1000"
+            android:textSize="11sp"
+            android:text="@string/placeholder"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/profileEmailText" />
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/profileSubjects"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_weight="1"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileRating">
-
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/profileDescription"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:text="@string/placeholder"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileSubjects" />
 
 </android.support.constraint.ConstraintLayout>
