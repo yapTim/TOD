@@ -47,6 +47,7 @@ class WaitingActivity : AppCompatActivity() {
     private var mode: String? = null
     lateinit var foundAlert: AlertDialog
     private val timeLimit = 30
+    private val timeLimitAccept = 10
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -329,7 +330,7 @@ class WaitingActivity : AppCompatActivity() {
     }
 
     private fun confirmation(matchFound: Any?) {
-        counter = 30
+        counter = timeLimitAccept
 
         val foundTimer = Timer()
         var matchStudent: Student? = null

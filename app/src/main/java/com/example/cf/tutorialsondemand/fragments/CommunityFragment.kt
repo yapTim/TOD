@@ -47,7 +47,6 @@ class CommunityFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_community, container, false)
-        val mainView = view.findViewById<FrameLayout>(R.id.mainView)
 
         view.searchButton.setOnClickListener {
 
@@ -86,17 +85,6 @@ class CommunityFragment : Fragment() {
 
             }
 
-        }
-
-
-        view.findViewById<Button>(R.id.buttonToInfalte).setOnClickListener {
-
-            layoutInflater.inflate(R.layout.activity_livestream, mainView, true)
-
-        }
-
-        view.find<Button>(R.id.checkProfileButton).setOnClickListener {
-            startActivity(Intent(context, LivestreamActivity::class.java))
         }
 
         return view

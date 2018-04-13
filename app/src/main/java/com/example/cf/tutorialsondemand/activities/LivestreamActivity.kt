@@ -441,14 +441,6 @@ class LivestreamActivity : AppCompatActivity(),
         val remote = connection?.equals(session?.connection)?.not()
 
         if (type != null && type == signalType) {
-            val vibrateFunction = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                vibrateFunction.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE))
-            } else {
-                vibrateFunction.vibrate(500)
-            }
-
             showMessage(data!!, remote!!)
         }
 

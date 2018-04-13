@@ -3,6 +3,8 @@
     <string name="login_preference_key">LOGIN_INFO</string>
     <string name="category_preference_key">CATEGORY_INFO</string>
 
+    <string name="searchHint">Search</string>
+
     <string name="placeholder">Sample Text</string>
     <string name="app_name">Tutorial On Demand</string>
     <string name="startLive">Start Livestream</string>

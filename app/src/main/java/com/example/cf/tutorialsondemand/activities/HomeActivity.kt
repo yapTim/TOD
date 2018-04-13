@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
+import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.View
 import android.widget.EditText
@@ -12,6 +13,7 @@ import android.widget.RatingBar
 import android.widget.TextView
 import com.example.cf.tutorialsondemand.R
 import com.example.cf.tutorialsondemand.adapter.HomeFragmentAdaptor
+import com.example.cf.tutorialsondemand.adapter.UserSearchAdaptor
 import com.example.cf.tutorialsondemand.models.User
 import com.example.cf.tutorialsondemand.retrofit.Connect
 import com.google.gson.Gson
@@ -28,6 +30,7 @@ import java.math.BigDecimal
 class HomeActivity : AppCompatActivity() {
     private lateinit var toolbar: android.support.v7.widget.Toolbar
     private var currentFragment: View? = null
+    private var searchFragment: View?  = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,16 +84,22 @@ class HomeActivity : AppCompatActivity() {
 
                 }
 
+                if(position == 1) {
+                    searchFragment = fragmentView.findViewById(R.id.communityFragmentView)
+                }
+
             }
 
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-
+                if (searchFragment != null) {
+                    val list = listOf<User>()
+                    searchFragment?.findViewById<RecyclerView>(R.id.userList)?.adapter = UserSearchAdaptor(list, this@HomeActivity)
+                    searchFragment?.findViewById<EditText>(R.id.searchBar)?.setText("")
+                }
             }
 
             override fun onPageScrollStateChanged(state: Int) {
-                if (state == ViewPager.SCROLL_STATE_SETTLING) {
 
-                }
             }
         })
 
