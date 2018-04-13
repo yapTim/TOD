@@ -46,6 +46,7 @@ class WaitingActivity : AppCompatActivity() {
     private var waitMessage: TextView? = null
     private var mode: String? = null
     lateinit var foundAlert: AlertDialog
+    private val timeLimit = 30
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -167,7 +168,7 @@ class WaitingActivity : AppCompatActivity() {
                                     override fun onResponse(call: Call<Tutor>?, response: Response<Tutor>?) {
                                         val tutor = response?.body()!!
 
-                                        if (!checkEmptyObject(tutor) && counter < 180) {
+                                        if (!checkEmptyObject(tutor) && counter < timeLimit) {
 
                                             timer.purge()
                                             timer.cancel()
@@ -200,7 +201,7 @@ class WaitingActivity : AppCompatActivity() {
                                     override fun onResponse(call: Call<Student>?, response: Response<Student>?) {
                                         val matchedUser = response?.body()!!
 
-                                        if(!checkEmptyObject(matchedUser) && counter < 180) {
+                                        if(!checkEmptyObject(matchedUser) && counter < timeLimit) {
 
                                             timer.purge()
                                             timer.cancel()
@@ -226,7 +227,7 @@ class WaitingActivity : AppCompatActivity() {
 
                         }
 
-                        if (counter > 180) {
+                        if (counter > timeLimit) {
 
                             timer.purge()
                             timer.cancel()
@@ -364,6 +365,11 @@ class WaitingActivity : AppCompatActivity() {
             foundTimer.purge()
             foundTimer.cancel()
 
+            acceptButton.visibility = View.GONE
+            declineButton.visibility = View.GONE
+
+            handler.removeCallbacksAndMessages(null)
+
             when(intent.getStringExtra("action")) {
 
                 "ask" ->{
@@ -372,10 +378,9 @@ class WaitingActivity : AppCompatActivity() {
                     val nextActivity = Intent(this@WaitingActivity, LivestreamActivity::class.java)
                     nextActivity.putExtra("roomId", matchTutor?.roomId!!)
                     nextActivity.putExtra("poolId", intent.getLongExtra("poolId", 0))
-                    nextActivity.putExtra("tutorId", matchTutor?.tutorId!!)
+                    nextActivity.putExtra("tutorId", matchTutor.tutorId)
+                    nextActivity.putExtra("tutorName", matchTutor.firstName)
                     nextActivity.putExtra("action", "ask")
-
-                    handler.removeCallbacksAndMessages(null)
 
                     startActivity(nextActivity)
                     finish()
@@ -385,6 +390,7 @@ class WaitingActivity : AppCompatActivity() {
                 "answer" -> {
 
                     view.findViewById<TextView>(R.id.timerText).visibility = View.GONE
+                    view.find<TextView>(R.id.timerTextHeader).visibility = View.GONE
 
                     val conn = Connect(getString(R.string.url))
                             .connectionLivestream
@@ -400,12 +406,13 @@ class WaitingActivity : AppCompatActivity() {
                         override fun onResponse(call: Call<Long>?, response: Response<Long>?) {
                             val roomId = response?.body()!!
 
-                            val waitingForStudentText = view.findViewById<TextView>(R.id.waitingForStudentText)
+                            val waitingForStudentText = view.findViewById<TextView>(R.id.timerText)
+
                             waitingForStudentText.text = getString(R.string.waitingForStudent)
                             waitingForStudentText.visibility = View.VISIBLE
 
                             counter = 0
-                            waitForStudent(roomId)
+                            waitForStudent(roomId, matchStudent.firstName)
                         }
 
                         override fun onFailure(call: Call<Long>?, t: Throwable?) {
@@ -456,9 +463,7 @@ class WaitingActivity : AppCompatActivity() {
 
                                         val nextActivity = Intent(this@WaitingActivity, HomeActivity::class.java)
                                         nextActivity.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-
-                                        foundAlert.dismiss()
-
+                                        nextActivity.putExtra("declinedSelf", true)
                                         startActivity(nextActivity)
                                         finish()
 
@@ -487,12 +492,11 @@ class WaitingActivity : AppCompatActivity() {
 
                 val nextActivity = Intent(this@WaitingActivity, HomeActivity::class.java)
                 nextActivity.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-
+                nextActivity.putExtra("declinedSelf", true)
                 startActivity(nextActivity)
                 finish()
 
             }
-
 
         }
 
@@ -531,7 +535,7 @@ class WaitingActivity : AppCompatActivity() {
         foundTimer.schedule(wait, 0, 1000)
     }
 
-    private fun waitForStudent(roomId: Long) {
+    private fun waitForStudent(roomId: Long, studentName: String) {
         timer = Timer()
 
         val waitForStudent = object: TimerTask() {
@@ -578,6 +582,7 @@ class WaitingActivity : AppCompatActivity() {
 
                                         val nextActivity = Intent(this@WaitingActivity, LivestreamActivity::class.java)
                                         nextActivity.putExtra("roomId", roomId)
+                                        nextActivity.putExtra("studentName", studentName)
                                         nextActivity.putExtra("action", "answer")
 
                                         handler.removeCallbacksAndMessages(null)
@@ -629,11 +634,6 @@ class WaitingActivity : AppCompatActivity() {
         }
 
         return ret
-
-    }
-
-
-    private fun stopTimers() {
 
     }
 

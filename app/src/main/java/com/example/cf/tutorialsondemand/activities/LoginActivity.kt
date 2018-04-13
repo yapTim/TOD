@@ -141,7 +141,23 @@ class LoginActivity : AppCompatActivity() {
             }
 
             override fun onError(error: FacebookException?) {
-                toast("Facebook Login Error: $error")
+                Log.e(LoginActivity::class.simpleName, "Facebook Login Error!")
+
+                alert(getString(R.string.facebookLoginErrorAlertMessage)) {
+
+                    title = getString(R.string.facebookLoginErrorAlertTitle)
+
+                    yesButton {
+
+                        val transition = AutoTransition()
+                        transition.duration = 500
+
+                        TransitionManager.beginDelayedTransition(findViewById(R.id.loginConstraint), transition)
+                        fbLoginButton.visibility = View.VISIBLE
+
+                    }
+
+                }.show()
             }
 
         })

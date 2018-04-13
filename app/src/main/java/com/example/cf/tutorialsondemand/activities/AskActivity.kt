@@ -9,6 +9,7 @@ import android.support.v4.content.res.ResourcesCompat
 import android.support.v4.view.ViewCompat
 import android.support.v7.widget.CardView
 import android.util.Log
+import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -170,6 +171,7 @@ class AskActivity : AppCompatActivity() {
         categoryHeader.width = wrap_content
         categoryHeader.height = wrap_content
         categoryHeader.text = category.categoryLabel
+        categoryHeader.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
         categoryHeader.gravity = Gravity.CENTER
 
         categoryCard.background = ResourcesCompat.getDrawable(resources, R.drawable.category_unselected_border, null)
@@ -189,6 +191,7 @@ class AskActivity : AppCompatActivity() {
             categoryHeader.width = wrap_content
             categoryHeader.height = wrap_content
             categoryHeader.text = category.categoryLabel
+            categoryHeader.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
             categoryHeader.gravity = Gravity.CENTER
 
             categoryCard.background = ResourcesCompat.getDrawable(resources, R.drawable.category_unselected_border, null)

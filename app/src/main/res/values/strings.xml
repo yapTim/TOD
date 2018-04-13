@@ -38,7 +38,7 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
 
     <!-- For HomeHomeActivity -->
-    <string name="welcomeText">Welcome, %1$s, to Tutorials on Demand\nWhat would you like to do?</string>
+    <string name="welcomeText">Welcome, %1$s, to Tutorial on Demand\nWhat would you like to do?</string>
     <string name="askText">Ask a Question</string>
     <string name="answerText">Answer a Question</string>
 
@@ -69,6 +69,12 @@
     <string name="declinedAlertTitle">Match Declined</string>
     <string name="notConnectedAlertMessage">Can\'t connect to the server!\nPlease check your connection</string>
     <string name="notConnectedAlertTitle">Error Connecting to Server</string>
+    <string name="backLivestreamAlertMessage">Are you sure you would like to exit?\nDoing so will drop the call.</string>
+    <string name="backLivestreamAlertTitle">Exit Call</string>
+    <string name="selfDeclineAlertMessage">You have backed out of the session!</string>
+    <string name="selfDeclineAlertTitle">Cancelled Session</string>
+    <string name="facebookLoginErrorAlertMessage">There was an error in connection to Facebook!</string>
+    <string name="facebookLoginErrorAlertTitle">Login Error</string>
 
     <!-- Waiting activity -->
     <string name="waitingMessage">Searching for a %1$s</string>
@@ -79,6 +85,7 @@
     <string name="timeElapsed">%1$d:%2$d%3$d</string>
     <string name="matchName">%1$s %2$s</string>
     <string name="waitingForStudent">Waiting for student to accept &#8230;</string>
+    <string name="acceptTimerHeader">Time Left to Accept</string>
 
     <!-- Profile Activity -->
     <string name="profileName">%1$s %2$s</string>

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground"
+    android:background="@color/colorChatRemote"
     tools:context="com.example.cf.tutorialsondemand.activities.HomeActivity">
 
 
@@ -24,7 +24,7 @@
             android:id="@+id/homeToolbar"
             android:layout_width="match_parent"
             android:layout_height="?android:attr/actionBarSize"
-            android:background="@color/colorPrimary"
+            android:background="@color/colorToolbar"
             android:elevation="4dp"
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
             app:layout_constraintEnd_toEndOf="parent"
@@ -48,7 +48,10 @@
             android:id="@+id/fragmentTab"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:tabMode="fixed" />
+            android:background="@color/colorHomePageSelector"
+            app:tabMode="fixed"
+            app:tabIndicatorColor="@color/colorChatLocal"
+            app:tabIndicatorHeight="6dp"/>
 
         <android.support.v4.view.ViewPager
             android:id="@+id/fragmentView"

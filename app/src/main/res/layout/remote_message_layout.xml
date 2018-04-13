@@ -9,8 +9,11 @@
         android:text="Remote Message"
         android:id="@+id/message_text"
         android:gravity="start"
-        android:layout_marginLeft="@dimen/message_horizontal_margin"
-        android:layout_marginRight="@dimen/message_horizontal_margin"
+        android:background="@drawable/remote_chat_border"
+        android:paddingBottom="8dp"
+        android:textColor="@color/colorChatText"
+        android:layout_marginStart="@dimen/message_horizontal_margin"
+        android:layout_marginEnd="@dimen/message_horizontal_margin"
         android:layout_marginTop="@dimen/message_vertical_margin"
         android:layout_marginBottom="@dimen/message_vertical_margin" />
 

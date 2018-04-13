@@ -11,7 +11,6 @@ import com.example.cf.tutorialsondemand.fragments.SelectActionFragment
 class HomeFragmentAdaptor(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
 
     val numFragments = 3
-    private val tabTitles = mutableListOf("Home", "Community", "Profile")
 
     override fun getCount(): Int = numFragments
 
@@ -26,5 +25,5 @@ class HomeFragmentAdaptor(fragmentManager: FragmentManager) : FragmentPagerAdapt
 
     }
 
-    override fun getPageTitle(position: Int): CharSequence? = tabTitles[position]
+    override fun getPageTitle(position: Int): CharSequence? = ""
 }

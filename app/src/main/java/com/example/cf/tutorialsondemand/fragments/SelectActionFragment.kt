@@ -2,9 +2,11 @@ package com.example.cf.tutorialsondemand.fragments
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.content.res.ResourcesCompat
 import android.support.v7.widget.CardView
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +15,8 @@ import android.widget.TextView
 
 import com.example.cf.tutorialsondemand.R
 import com.example.cf.tutorialsondemand.activities.AskActivity
+import com.example.cf.tutorialsondemand.models.User
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_select_action.*
 
 private const val ARG_PARAM1 = "someTitle"
@@ -35,16 +39,23 @@ class SelectActionFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
 
         val view: View = inflater.inflate(R.layout.fragment_select_action, container, false)
-        view.findViewById<TextView>(R.id.selectActionWelcome).text = getString(R.string.welcomeText, "Test")
+
+        val profile = Gson().fromJson(activity!!
+                .getSharedPreferences(getString(R.string.login_preference_key), Context.MODE_PRIVATE)
+                .getString("profile", ""), User::class.java)
+
+        view.findViewById<TextView>(R.id.selectActionWelcome).text = getString(R.string.welcomeText, profile.firstName)
         val askCardView = view.findViewById<CardView>(R.id.askCard)
         val answerCardView = view.findViewById<CardView>(R.id.answerCard)
 
+        askCardView.setCardBackgroundColor(ResourcesCompat.getColor(resources, R.color.colorCards, null))
         askCardView.setOnClickListener {
             val intent = Intent(context, AskActivity::class.java)
             intent.putExtra("action", "ask")
             startActivity(intent)
         }
 
+        answerCardView.setCardBackgroundColor(ResourcesCompat.getColor(resources, R.color.colorCards, null))
         answerCardView.setOnClickListener {
             val intent = Intent(context, AskActivity::class.java)
             intent.putExtra("action", "answer")

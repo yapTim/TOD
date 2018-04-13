@@ -38,9 +38,7 @@ class ProfileActivity : AppCompatActivity() {
     private fun setFields() {
 
         val profile = Gson().fromJson(
-                this
-                        .getSharedPreferences(getString(R.string.login_preference_key), Context.MODE_PRIVATE)
-                        .getString("profile", ""),
+                intent.getStringExtra("profile"),
                 User::class.java
         )
 

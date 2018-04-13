@@ -1,13 +1,19 @@
 package com.example.cf.tutorialsondemand.adapter
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.support.v4.content.ContextCompat.startActivity
 import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import com.example.cf.tutorialsondemand.R
+import com.example.cf.tutorialsondemand.activities.ProfileActivity
 import com.example.cf.tutorialsondemand.models.User
+import com.google.gson.Gson
 import com.mikhaellopez.circularimageview.CircularImageView
 import com.squareup.picasso.Picasso
 import org.jetbrains.anko.find
@@ -26,7 +32,13 @@ class UserSearchAdaptor(val userList: List<User>, val context: Context) : Recycl
         holder.cardView.find<TextView>(R.id.searchUserName).text = context.getString(R.string.profileName, userList[position].firstName, userList[position].lastName)
 
         holder.cardView.setOnClickListener {
-            context.toast("HELLO $position")
+            Log.i(context::class.simpleName, "This is the profile ${userList[position]}")
+
+            val nextActivity = Intent(context, ProfileActivity::class.java)
+            nextActivity.putExtra("profile", Gson().toJson(userList[position]))
+
+            context.startActivity(nextActivity)
+
         }
 
     }

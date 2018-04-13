@@ -53,32 +53,36 @@ class CommunityFragment : Fragment() {
 
             val searchString = view.find<EditText>(R.id.searchBar).text.toString()
 
-            view.find<RecyclerView>(R.id.userList).apply {
-                setHasFixedSize(true)
+            if (searchString != "") {
 
-                layoutManager = LinearLayoutManager(activity)
+                view.find<RecyclerView>(R.id.userList).apply {
+                    setHasFixedSize(true)
 
-                val conn = Connect(getString(R.string.url))
-                        .connectionProfile
-                        .getSearchResult(searchString)
+                    layoutManager = LinearLayoutManager(activity)
 
-                conn.enqueue(object: Callback<List<User>> {
+                    val conn = Connect(getString(R.string.url))
+                            .connectionProfile
+                            .getSearchResult(searchString)
 
-                    override fun onResponse(call: Call<List<User>>?, response: Response<List<User>>?) {
-                        val returnedListOfUsers = response?.body()!!
+                    conn.enqueue(object: Callback<List<User>> {
 
-                        if(returnedListOfUsers.isEmpty()) {
-                            activity?.toast("LOL")
+                        override fun onResponse(call: Call<List<User>>?, response: Response<List<User>>?) {
+                            val returnedListOfUsers = response?.body()!!
+
+                            if(returnedListOfUsers.isEmpty()) {
+                                activity?.toast("LOL")
+                            }
+
+                            adapter = UserSearchAdaptor(response.body()!!, activity!!)
                         }
 
-                        adapter = UserSearchAdaptor(response?.body()!!, activity!!)
-                    }
+                        override fun onFailure(call: Call<List<User>>?, t: Throwable?) {
+                            Log.e(activity!!::class.simpleName, "getSearchResult Error: $t")
+                        }
 
-                    override fun onFailure(call: Call<List<User>>?, t: Throwable?) {
-                        Log.e(activity!!::class.simpleName, "getSearchResult Error: $t")
-                    }
+                    })
 
-                })
+                }
 
             }
 

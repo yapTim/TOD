@@ -5,41 +5,52 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Path
-import android.os.Bundle
-import android.os.Handler
+import android.os.*
+import android.support.constraint.ConstraintLayout
 import android.support.v4.content.res.ResourcesCompat
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.Toolbar
+import android.transition.Transition
+import android.transition.TransitionManager
 import android.util.Log
 import android.view.View
+import android.view.WindowManager
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import com.example.cf.tutorialsondemand.R
 import com.example.cf.tutorialsondemand.adapter.SignalAdapter
 import com.example.cf.tutorialsondemand.models.Opentok
+import com.example.cf.tutorialsondemand.models.SignalMessage
 import com.example.cf.tutorialsondemand.retrofit.Connect
 import com.opentok.android.*
 import com.opentok.android.Publisher.CameraListener
 import kotlinx.android.synthetic.main.activity_livestream.*
-import org.jetbrains.anko.find
-import org.jetbrains.anko.toast
+import org.jetbrains.anko.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class LivestreamActivity : AppCompatActivity(), Session.SessionListener, PublisherKit.PublisherListener, CameraListener {
+class LivestreamActivity : AppCompatActivity(),
+        Session.SessionListener,
+        PublisherKit.PublisherListener,
+        CameraListener,
+        Session.SignalListener {
+
     private lateinit var mSession: Session
     private lateinit var mPublisher: Publisher
     private lateinit var mSubscriber: Subscriber
-    private var logTag = MainActivity::class.simpleName
+    private var logTag = LivestreamActivity::class.simpleName
     lateinit var editText: EditText
     lateinit var listText: ListView
     lateinit var messageHistory: SignalAdapter
-    val signalType = "text-signal"
+    private val signalType = "text-signal"
 
     companion object {
 
-        private val AUTO_HIDE = true
+        private val AUTO_HIDE = false
 
         private val AUTO_HIDE_DELAY_MILLIS = 3000
 
@@ -55,6 +66,7 @@ class LivestreamActivity : AppCompatActivity(), Session.SessionListener, Publish
     }
 
     private var mVisible: Boolean = false
+    private var chatIsOpen = false
     private val mHideRunnable = Runnable { hide() }
 
     private val mDelayHideTouchListener = View.OnTouchListener { _, _ ->
@@ -70,7 +82,7 @@ class LivestreamActivity : AppCompatActivity(), Session.SessionListener, Publish
     }
 
     private fun toggle() {
-        if (mVisible) {
+        if (mVisible && !chatIsOpen) {
             hide()
         } else {
             show()
@@ -78,6 +90,7 @@ class LivestreamActivity : AppCompatActivity(), Session.SessionListener, Publish
     }
 
     private fun hide() {
+        TransitionManager.beginDelayedTransition(findViewById(R.id.livestreamConstraintLayout))
         fullscreen_content_controls.visibility = View.GONE
         mVisible = false
         mHideHandler.removeCallbacks(mShowPart2Runnable)
@@ -85,6 +98,7 @@ class LivestreamActivity : AppCompatActivity(), Session.SessionListener, Publish
 
     private fun show() {
         mVisible = true
+        TransitionManager.beginDelayedTransition(findViewById(R.id.livestreamConstraintLayout))
         mHideHandler.postDelayed(mShowPart2Runnable, UI_ANIMATION_DELAY.toLong())
     }
 
@@ -151,7 +165,45 @@ class LivestreamActivity : AppCompatActivity(), Session.SessionListener, Publish
             }
         }
 
+        chatButton.setOnClickListener {
+
+            chatIsOpen = !chatIsOpen
+
+            TransitionManager.beginDelayedTransition(findViewById(R.id.livestreamConstraintLayout))
+
+            if (chatIsOpen) {
+
+                findViewById<ConstraintLayout>(R.id.chatConstriantLayout).visibility = View.VISIBLE
+
+            } else {
+
+                findViewById<ConstraintLayout>(R.id.chatConstriantLayout).visibility = View.GONE
+
+            }
+
+        }
+
         requestPermissions()
+
+        messageHistory = SignalAdapter(this)
+        editText = findViewById(R.id.message_edit_text)
+        listText = find(R.id.message_history_list_view)
+
+        listText.adapter = messageHistory
+
+        editText.setOnEditorActionListener { v, actionId, _ ->
+            if(actionId == EditorInfo.IME_ACTION_DONE && editText.text.toString() != ""){
+                val inputmanager = v.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                inputmanager.hideSoftInputFromWindow(v.windowToken, 0)
+                sendMessage()
+                true
+            } else {
+                false
+            }
+        }
+
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
+
     }
 
     // for livestream permissions
@@ -180,6 +232,8 @@ class LivestreamActivity : AppCompatActivity(), Session.SessionListener, Publish
 
                             val keys = response?.body()!!
 
+                            find<Toolbar>(R.id.chatToolbar).title = intent.getStringExtra("tutorName")
+
                             initializeSession(keys.apiKey, keys.sessionId, keys.accessToken)
 
                         }
@@ -205,6 +259,8 @@ class LivestreamActivity : AppCompatActivity(), Session.SessionListener, Publish
                         override fun onResponse(call: Call<Opentok>?, response: Response<Opentok>?) {
                             val keys = response?.body()!!
 
+                            find<Toolbar>(R.id.chatToolbar).title = intent.getStringExtra("studentName")
+
                             initializeSession(keys.apiKey, keys.sessionId, keys.accessToken)
                         }
 
@@ -227,17 +283,24 @@ class LivestreamActivity : AppCompatActivity(), Session.SessionListener, Publish
 
     // Session
     override fun onConnected(session: Session?) {
+
         Log.i("LOl", "Connected")
 
         mPublisher = Publisher.Builder(this).build()
         mPublisher.setPublisherListener(this)
 
-        findViewById<FrameLayout>(R.id.pubsView).addView(mPublisher.view)
         mSession.publish(mPublisher)
+        findViewById<FrameLayout>(R.id.pubsView).addView(mPublisher.view)
+
+        editText.isEnabled = true
+
     }
 
     override fun onDisconnected(session: Session?) {
+
         Log.i(logTag, "Disconnected")
+
+        editText.isEnabled = false
 
     }
 
@@ -245,7 +308,7 @@ class LivestreamActivity : AppCompatActivity(), Session.SessionListener, Publish
 
         Log.i(logTag, "Dropped")
         findViewById<LinearLayout>(R.id.loadingView).visibility = View.VISIBLE
-        findViewById<FrameLayout>(R.id.subsView).removeAllViews()
+
         dropCall()
 
     }
@@ -257,6 +320,7 @@ class LivestreamActivity : AppCompatActivity(), Session.SessionListener, Publish
         mSession.subscribe(mSubscriber)
         findViewById<LinearLayout>(R.id.loadingView).visibility = View.GONE
         findViewById<FrameLayout>(R.id.subsView).addView(mSubscriber.view)
+
     }
 
     override fun onError(session: Session?, error: OpentokError?) {
@@ -340,7 +404,6 @@ class LivestreamActivity : AppCompatActivity(), Session.SessionListener, Publish
 
         } else {
 
-            // to be changed when chat is up
             mSession.disconnect()
             mPublisher.destroy()
             mSubscriber.destroy()
@@ -348,6 +411,45 @@ class LivestreamActivity : AppCompatActivity(), Session.SessionListener, Publish
             startActivity(Intent(this, HomeActivity::class.java))
             finish()
 
+        }
+
+    }
+
+    private fun sendMessage() {
+
+        Log.d(logTag, "Send Message")
+
+        toast("In")
+
+        val signal = SignalMessage(editText.text.toString())
+        mSession.sendSignal(signalType, signal.messageText)
+
+        editText.setText("")
+
+    }
+
+    private fun showMessage(messageData: String, remote: Boolean) {
+
+        Log.d(logTag, "Show Message")
+
+        val message = SignalMessage(messageData, remote)
+        messageHistory.add(message)
+
+    }
+
+    override fun onSignalReceived(session: Session?, type: String?, data: String?, connection: Connection?) {
+        val remote = connection?.equals(session?.connection)?.not()
+
+        if (type != null && type == signalType) {
+            val vibrateFunction = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                vibrateFunction.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE))
+            } else {
+                vibrateFunction.vibrate(500)
+            }
+
+            showMessage(data!!, remote!!)
         }
 
     }
@@ -402,11 +504,23 @@ class LivestreamActivity : AppCompatActivity(), Session.SessionListener, Publish
 
         mSession = Session.Builder(this@LivestreamActivity, apiKey, sessionId).build()
         mSession.setSessionListener(this@LivestreamActivity)
+        mSession.setSignalListener(this@LivestreamActivity)
         mSession.connect(accessToken)
 
     }
 
     override fun onBackPressed() {
+
+        alert(getString(R.string.backLivestreamAlertMessage)) {
+            title = getString(R.string.backLivestreamAlertTitle)
+            yesButton {
+                dropCall()
+            }
+
+            noButton {
+
+            }
+        }.show()
 
     }
 }

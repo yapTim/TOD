@@ -1,346 +1,386 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/livestreamContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000000"
-    tools:context="com.example.cf.tutorialsondemand.activities.LivestreamActivity"
     android:orientation="vertical"
-    android:id="@+id/livestreamContainer">
+    tools:context="com.example.cf.tutorialsondemand.activities.LivestreamActivity">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/livestreamConstraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/videoContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0">
+
+            <FrameLayout
+                android:id="@+id/subsView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:id="@+id/loadingView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="vertical">
+
+                    <ProgressBar
+                        android:id="@+id/loadingForSubs"
+                        style="?android:attr/progressBarStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/waitText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/waitingForVideo"
+                        android:textColor="#FFFFFF" />
+
+                </LinearLayout>
+
+            </FrameLayout>
+
+        </FrameLayout>
+
 
         <android.support.constraint.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:id="@+id/chatConstriantLayout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/colorWhite"
+            app:layout_constraintBottom_toTopOf="@+id/fullscreen_content_controls"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <FrameLayout
-                android:id="@+id/videoContainer"
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/chatToolbar"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="?android:attr/actionBarSize"
+                android:background="@color/colorToolbar"
+                android:elevation="4dp"
+                android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+            <EditText
+                android:id="@+id/message_edit_text"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:enabled="false"
+                android:hint="@string/messageHint"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:maxLines="1"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent" />
 
-                <FrameLayout
-                    android:id="@+id/subsView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <LinearLayout
-                        android:id="@+id/loadingView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:orientation="vertical">
-
-                        <ProgressBar
-                            android:id="@+id/loadingForSubs"
-                            style="?android:attr/progressBarStyle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-
-                        <TextView
-                            android:id="@+id/waitText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/waitingForVideo"
-                            android:textColor="#FFFFFF" />
-
-                    </LinearLayout>
-
-                </FrameLayout>
-
-                <FrameLayout
-                    android:id="@+id/pubsView"
-                    android:layout_width="@dimen/pubs_screen_width"
-                    android:layout_height="@dimen/pubs_screen_height"
-                    android:layout_gravity="top|end"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginTop="16dp"
-                    android:background="#FFFFFF"
-                    android:elevation="4dp"
-                    android:padding="2dp" />
-
-            </FrameLayout>
-
-
-            <!-- This FrameLayout insets its children based on system windows using
-                 android:fitsSystemWindows. -->
-            <FrameLayout
-                android:id="@+id/livestreamButtonBar"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:animateLayoutChanges="true"
-                android:fitsSystemWindows="true"
-                app:layout_constraintBottom_toBottomOf="parent"
+            <ListView
+                android:id="@+id/message_history_list_view"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_above="@+id/message_edit_text"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:background="@color/colorChatRemote"
+                android:divider="@null"
+                android:paddingTop="?android:attr/actionBarSize"
+                android:dividerHeight="0dp"
+                android:transcriptMode="alwaysScroll"
+                android:stackFromBottom="true"
+                app:layout_constraintBottom_toTopOf="@+id/message_edit_text"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <android.support.constraint.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <LinearLayout
-                        android:id="@+id/fullscreen_content_controls"
-                        style="?metaButtonBarStyle"
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_gravity="bottom"
-                        android:background="#000000"
-                        android:orientation="horizontal"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/actionsToolbarGuideline"
-                        tools:ignore="UselessParent">
-
-                        <android.support.constraint.ConstraintLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-
-                            <android.support.design.widget.FloatingActionButton
-                                android:id="@+id/dropCallButton"
-                                android:layout_width="45dp"
-                                android:layout_height="45dp"
-                                android:layout_marginBottom="8dp"
-                                android:layout_marginEnd="8dp"
-                                android:layout_marginStart="8dp"
-                                android:layout_marginTop="8dp"
-                                android:layout_weight="1"
-                                android:clickable="true"
-                                android:elevation="2dp"
-                                android:focusable="true"
-                                android:scaleType="center"
-                                android:src="@drawable/icon_drop_call"
-                                app:backgroundTint="@color/colorError"
-                                app:fabSize="auto"
-                                app:layout_constraintBottom_toTopOf="@+id/buttonBottomGuideline"
-                                app:layout_constraintEnd_toStartOf="@+id/dropCallButtonRightGuideline"
-                                app:layout_constraintStart_toStartOf="@+id/dropCallButtonLeftGuideline"
-                                app:layout_constraintTop_toTopOf="@+id/buttonTopGuideline" />
-
-                            <android.support.design.widget.FloatingActionButton
-                                android:id="@+id/switchCameraButton"
-                                android:layout_width="45dp"
-                                android:layout_height="45dp"
-                                android:layout_marginBottom="8dp"
-                                android:layout_marginEnd="8dp"
-                                android:layout_marginStart="8dp"
-                                android:layout_marginTop="8dp"
-                                android:layout_weight="1"
-                                android:clickable="true"
-                                android:elevation="2dp"
-                                android:focusable="true"
-                                android:scaleType="center"
-                                android:src="@drawable/icon_switch_camera"
-                                app:backgroundTint="@color/colorButton"
-                                app:fabSize="auto"
-                                app:layout_constraintBottom_toTopOf="@+id/buttonBottomGuideline"
-                                app:layout_constraintEnd_toStartOf="@+id/switchCameraButtonRightGuideline"
-                                app:layout_constraintStart_toStartOf="@+id/switchCameraButtonLeftGuideline"
-                                app:layout_constraintTop_toTopOf="@+id/buttonTopGuideline" />
-
-                            <android.support.design.widget.FloatingActionButton
-                                android:id="@+id/chatButton"
-                                android:layout_width="56dp"
-                                android:layout_height="56dp"
-                                android:layout_marginBottom="8dp"
-                                android:layout_marginEnd="8dp"
-                                android:layout_marginStart="8dp"
-                                android:layout_marginTop="8dp"
-                                android:clickable="true"
-                                android:elevation="2dp"
-                                android:focusable="true"
-                                android:scaleType="centerCrop"
-                                android:src="@drawable/icon_chat"
-                                app:backgroundTint="@color/colorButton"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toStartOf="@+id/chatButtonRightGuideline"
-                                app:layout_constraintStart_toStartOf="@+id/chatButtonLeftGuideline"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                            <android.support.design.widget.FloatingActionButton
-                                android:id="@+id/muteMicButton"
-                                android:layout_width="45dp"
-                                android:layout_height="45dp"
-                                android:layout_marginBottom="8dp"
-                                android:layout_marginEnd="8dp"
-                                android:layout_marginStart="8dp"
-                                android:layout_marginTop="8dp"
-                                android:layout_weight="1"
-                                android:clickable="true"
-                                android:elevation="2dp"
-                                android:focusable="true"
-                                android:scaleType="center"
-                                android:src="@drawable/icon_mic_on"
-                                app:backgroundTint="@color/colorButton"
-                                app:fabSize="auto"
-                                app:layout_constraintBottom_toTopOf="@+id/buttonBottomGuideline"
-                                app:layout_constraintEnd_toStartOf="@+id/muteMicButtonRightGuideline"
-                                app:layout_constraintStart_toStartOf="@+id/muteMicButtonLeftGuideline"
-                                app:layout_constraintTop_toTopOf="@+id/buttonTopGuideline" />
-
-                            <android.support.design.widget.FloatingActionButton
-                                android:id="@+id/toggleVideoButton"
-                                android:layout_width="45dp"
-                                android:layout_height="45dp"
-                                android:layout_marginBottom="8dp"
-                                android:layout_marginEnd="8dp"
-                                android:layout_marginStart="8dp"
-                                android:layout_marginTop="8dp"
-                                android:layout_weight="1"
-                                android:clickable="true"
-                                android:elevation="2dp"
-                                android:focusable="true"
-                                android:scaleType="center"
-                                android:src="@drawable/icon_video_on"
-                                app:backgroundTint="@color/colorButton"
-                                app:elevation="2dp"
-                                app:fabSize="auto"
-                                app:layout_constraintBottom_toTopOf="@+id/buttonBottomGuideline"
-                                app:layout_constraintEnd_toStartOf="@+id/toggleVideoButtonRightGuideline"
-                                app:layout_constraintStart_toStartOf="@+id/toggleVideoButtonLeftGuideline"
-                                app:layout_constraintTop_toTopOf="@+id/buttonTopGuideline" />
-
-                            <android.support.constraint.Guideline
-                                android:id="@+id/dropCallButtonLeftGuideline"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                app:layout_constraintGuide_percent="0.055" />
-
-                            <android.support.constraint.Guideline
-                                android:id="@+id/dropCallButtonRightGuideline"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                app:layout_constraintGuide_percent="0.20" />
-
-                            <android.support.constraint.Guideline
-                                android:id="@+id/switchCameraButtonLeftGuideline"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                app:layout_constraintGuide_percent="0.23" />
-
-                            <android.support.constraint.Guideline
-                                android:id="@+id/switchCameraButtonRightGuideline"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                app:layout_constraintGuide_percent="0.38" />
-
-                            <android.support.constraint.Guideline
-                                android:id="@+id/chatButtonLeftGuideline"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                app:layout_constraintGuide_percent="0.41" />
-
-                            <android.support.constraint.Guideline
-                                android:id="@+id/chatButtonRightGuideline"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                app:layout_constraintGuide_percent="0.59" />
-
-                            <android.support.constraint.Guideline
-                                android:id="@+id/muteMicButtonLeftGuideline"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                app:layout_constraintGuide_percent="0.62" />
-
-                            <android.support.constraint.Guideline
-                                android:id="@+id/muteMicButtonRightGuideline"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                app:layout_constraintGuide_percent="0.77" />
-
-                            <android.support.constraint.Guideline
-                                android:id="@+id/toggleVideoButtonLeftGuideline"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                app:layout_constraintGuide_percent="0.80" />
-
-                            <android.support.constraint.Guideline
-                                android:id="@+id/toggleVideoButtonRightGuideline"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                app:layout_constraintGuide_percent="0.95" />
-
-                            <android.support.constraint.Guideline
-                                android:id="@+id/buttonTopGuideline"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                app:layout_constraintGuide_percent="0.1" />
-
-                            <android.support.constraint.Guideline
-                                android:id="@+id/buttonBottomGuideline"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                app:layout_constraintGuide_percent="0.90" />
-
-                        </android.support.constraint.ConstraintLayout>
-
-                    </LinearLayout>
-
-                    <android.support.constraint.Guideline
-                        android:id="@+id/actionsToolbarGuideline"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        app:layout_constraintGuide_percent="0.875" />
-
-                </android.support.constraint.ConstraintLayout>
-
-            </FrameLayout>
-
+                app:layout_constraintTop_toTopOf="parent" />
 
         </android.support.constraint.ConstraintLayout>
 
+        <FrameLayout
+            android:id="@+id/pubsView"
+            android:layout_width="@dimen/pubs_screen_width"
+            android:layout_height="@dimen/pubs_screen_height"
+            android:layout_gravity="top|end"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="24dp"
+            android:background="#FFFFFF"
+            android:elevation="4dp"
+            android:padding="2dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <!-- This FrameLayout insets its children based on system windows using
+                 android:fitsSystemWindows. -->
+
+        <LinearLayout
+            android:id="@+id/fullscreen_content_controls"
+            style="?metaButtonBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="#000000"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:ignore="UselessParent">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/dropCallButton"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:elevation="2dp"
+                    android:focusable="true"
+                    android:scaleType="center"
+                    android:src="@drawable/icon_drop_call"
+                    app:backgroundTint="@color/colorError"
+                    app:fabSize="auto"
+                    app:layout_constraintBottom_toTopOf="@+id/buttonBottomGuideline"
+                    app:layout_constraintEnd_toStartOf="@+id/dropCallButtonRightGuideline"
+                    app:layout_constraintStart_toStartOf="@+id/dropCallButtonLeftGuideline"
+                    app:layout_constraintTop_toTopOf="@+id/buttonTopGuideline" />
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/switchCameraButton"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:elevation="2dp"
+                    android:focusable="true"
+                    android:scaleType="center"
+                    android:src="@drawable/icon_switch_camera"
+                    app:backgroundTint="@color/colorButton"
+                    app:fabSize="auto"
+                    app:layout_constraintBottom_toTopOf="@+id/buttonBottomGuideline"
+                    app:layout_constraintEnd_toStartOf="@+id/switchCameraButtonRightGuideline"
+                    app:layout_constraintStart_toStartOf="@+id/switchCameraButtonLeftGuideline"
+                    app:layout_constraintTop_toTopOf="@+id/buttonTopGuideline" />
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/chatButton"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:clickable="true"
+                    android:elevation="2dp"
+                    android:focusable="true"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/icon_chat"
+                    app:backgroundTint="@color/colorButton"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/chatButtonRightGuideline"
+                    app:layout_constraintStart_toStartOf="@+id/chatButtonLeftGuideline"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/muteMicButton"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:elevation="2dp"
+                    android:focusable="true"
+                    android:scaleType="center"
+                    android:src="@drawable/icon_mic_on"
+                    app:backgroundTint="@color/colorButton"
+                    app:fabSize="auto"
+                    app:layout_constraintBottom_toTopOf="@+id/buttonBottomGuideline"
+                    app:layout_constraintEnd_toStartOf="@+id/muteMicButtonRightGuideline"
+                    app:layout_constraintStart_toStartOf="@+id/muteMicButtonLeftGuideline"
+                    app:layout_constraintTop_toTopOf="@+id/buttonTopGuideline" />
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/toggleVideoButton"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:elevation="2dp"
+                    android:focusable="true"
+                    android:scaleType="center"
+                    android:src="@drawable/icon_video_on"
+                    app:backgroundTint="@color/colorButton"
+                    app:elevation="2dp"
+                    app:fabSize="auto"
+                    app:layout_constraintBottom_toTopOf="@+id/buttonBottomGuideline"
+                    app:layout_constraintEnd_toStartOf="@+id/toggleVideoButtonRightGuideline"
+                    app:layout_constraintStart_toStartOf="@+id/toggleVideoButtonLeftGuideline"
+                    app:layout_constraintTop_toTopOf="@+id/buttonTopGuideline" />
+
+                <android.support.constraint.Guideline
+                    android:id="@+id/dropCallButtonLeftGuideline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.055" />
+
+                <android.support.constraint.Guideline
+                    android:id="@+id/dropCallButtonRightGuideline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.20" />
+
+                <android.support.constraint.Guideline
+                    android:id="@+id/switchCameraButtonLeftGuideline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.23" />
+
+                <android.support.constraint.Guideline
+                    android:id="@+id/switchCameraButtonRightGuideline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.38" />
+
+                <android.support.constraint.Guideline
+                    android:id="@+id/chatButtonLeftGuideline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.41" />
+
+                <android.support.constraint.Guideline
+                    android:id="@+id/chatButtonRightGuideline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.59" />
+
+                <android.support.constraint.Guideline
+                    android:id="@+id/muteMicButtonLeftGuideline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.62" />
+
+                <android.support.constraint.Guideline
+                    android:id="@+id/muteMicButtonRightGuideline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.77" />
+
+                <android.support.constraint.Guideline
+                    android:id="@+id/toggleVideoButtonLeftGuideline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.80" />
+
+                <android.support.constraint.Guideline
+                    android:id="@+id/toggleVideoButtonRightGuideline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.95" />
+
+                <android.support.constraint.Guideline
+                    android:id="@+id/buttonTopGuideline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintGuide_percent="0.1" />
+
+                <android.support.constraint.Guideline
+                    android:id="@+id/buttonBottomGuideline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintGuide_percent="0.90" />
+
+            </android.support.constraint.ConstraintLayout>
+
+        </LinearLayout>
+
+    </android.support.constraint.ConstraintLayout>
+
     <!--<android.support.constraint.ConstraintLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent">-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent">-->
 
-        <!--<ListView-->
-            <!--android:id="@+id/message_history_list_view"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_above="@+id/message_edit_text"-->
-            <!--android:layout_alignParentTop="true"-->
-            <!--android:layout_centerHorizontal="true"-->
-            <!--android:layout_marginBottom="@dimen/dp8"-->
-            <!--android:layout_marginEnd="@dimen/dp8"-->
-            <!--android:layout_marginStart="@dimen/dp8"-->
-            <!--android:layout_marginTop="@dimen/dp8"-->
-            <!--android:transcriptMode="alwaysScroll"-->
-            <!--app:layout_constraintBottom_toTopOf="@+id/message_edit_text"-->
-            <!--app:layout_constraintEnd_toEndOf="parent"-->
-            <!--app:layout_constraintHorizontal_bias="0.0"-->
-            <!--app:layout_constraintStart_toStartOf="parent"-->
-            <!--app:layout_constraintTop_toTopOf="parent"-->
-            <!--app:layout_constraintVertical_bias="0.986" />-->
+    <!--<ListView-->
+    <!--android:id="@+id/message_history_list_view"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_above="@+id/message_edit_text"-->
+    <!--android:layout_alignParentTop="true"-->
+    <!--android:layout_centerHorizontal="true"-->
+    <!--android:layout_marginBottom="@dimen/dp8"-->
+    <!--android:layout_marginEnd="@dimen/dp8"-->
+    <!--android:layout_marginStart="@dimen/dp8"-->
+    <!--android:layout_marginTop="@dimen/dp8"-->
+    <!--android:transcriptMode="alwaysScroll"-->
+    <!--app:layout_constraintBottom_toTopOf="@+id/message_edit_text"-->
+    <!--app:layout_constraintEnd_toEndOf="parent"-->
+    <!--app:layout_constraintHorizontal_bias="0.0"-->
+    <!--app:layout_constraintStart_toStartOf="parent"-->
+    <!--app:layout_constraintTop_toTopOf="parent"-->
+    <!--app:layout_constraintVertical_bias="0.986" />-->
 
-        <!--<EditText-->
-            <!--android:id="@+id/message_edit_text"-->
-            <!--android:layout_width="fill_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_alignParentBottom="true"-->
-            <!--android:layout_marginBottom="16dp"-->
-            <!--android:layout_marginEnd="@dimen/dp8"-->
-            <!--android:layout_marginStart="@dimen/dp8"-->
-            <!--android:enabled="false"-->
-            <!--android:hint="@string/messageHint"-->
-            <!--android:imeOptions="actionDone"-->
-            <!--android:inputType="text"-->
-            <!--android:maxLines="1" />-->
+    <!--<EditText-->
+    <!--android:id="@+id/message_edit_text"-->
+    <!--android:layout_width="fill_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignParentBottom="true"-->
+    <!--android:layout_marginBottom="16dp"-->
+    <!--android:layout_marginEnd="@dimen/dp8"-->
+    <!--android:layout_marginStart="@dimen/dp8"-->
+    <!--android:enabled="false"-->
+    <!--android:hint="@string/messageHint"-->
+    <!--android:imeOptions="actionDone"-->
+    <!--android:inputType="text"-->
+    <!--android:maxLines="1" />-->
 
     <!--</android.support.constraint.ConstraintLayout>-->
 

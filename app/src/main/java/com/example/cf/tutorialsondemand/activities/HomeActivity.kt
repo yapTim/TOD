@@ -40,6 +40,10 @@ class HomeActivity : AppCompatActivity() {
 
         fragmentTab.setupWithViewPager(fragmentView)
 
+        fragmentTab.getTabAt(0)?.setIcon(R.drawable.icon_home)
+        fragmentTab.getTabAt(1)?.setIcon(R.drawable.icon_group)
+        fragmentTab.getTabAt(2)?.setIcon(R.drawable.icon_profile)
+
         fragmentView.addOnPageChangeListener(object: ViewPager.OnPageChangeListener {
             override fun onPageSelected(position: Int) {
 
@@ -107,6 +111,10 @@ class HomeActivity : AppCompatActivity() {
             declinedAlert()
         }
 
+        if(intent.getBooleanExtra("declinedSelf", false)) {
+            selfDeclinedAlert()
+        }
+
     }
 
     private fun failedAcceptAlert() {
@@ -142,6 +150,14 @@ class HomeActivity : AppCompatActivity() {
             title = getString(R.string.declinedAlertTitle)
             yesButton {}
         }.show()
+    }
+
+    private fun selfDeclinedAlert() {
+        alert(getString(R.string.selfDeclineAlertMessage)) {
+            title = getString(R.string.selfDeclineAlertTitle)
+            yesButton {}
+        }
+
     }
 
     fun setLoginPreference(user: User) {
